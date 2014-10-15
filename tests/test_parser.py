@@ -1,9 +1,29 @@
 # -*- coding: utf-8 -*-
+#
+# This file is part of Invenio Query Parser.
+# Copyright (C) 2014 CERN.
+#
+# Invenio Query Parser is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Invenio Query Parser is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Invenio; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# In applying this licence, CERN does not waive the privileges and immunities
+# granted to it by virtue of its status as an Intergovernmental Organization
+# or submit itself to any jurisdiction.
 
 """Unit tests for the search engine query parsers."""
 
 from __future__ import unicode_literals
-
 
 from pytest import generate_tests
 
@@ -22,7 +42,8 @@ def generate_parser_test(query, expected):
     def func(self):
         tree = self.parser.parse_query(query)
         printer = load_walkers().TreeRepr()
-        assert tree == expected, "parsed tree: %s\nexpected tree: %s" % (tree.accept(printer), expected.accept(printer))
+        assert tree == expected, "parsed tree: %s\nexpected tree: %s" % (
+            tree.accept(printer), expected.accept(printer))
     return func
 
 
@@ -36,17 +57,17 @@ class TestParser(object):
 
     queries = (
         ("",
-          EmptyQuery('')),
+         EmptyQuery('')),
         ("    \t",
-          EmptyQuery('    \t')),
+         EmptyQuery('    \t')),
         ("bar",
-          ValueQuery(Value('bar'))),
+         ValueQuery(Value('bar'))),
         ("2004",
-          ValueQuery(Value('2004'))),
+         ValueQuery(Value('2004'))),
         ("'bar'",
-          ValueQuery(SingleQuotedValue('bar'))),
+         ValueQuery(SingleQuotedValue('bar'))),
         ("\"bar\"",
-          ValueQuery(DoubleQuotedValue('bar'))),
+         ValueQuery(DoubleQuotedValue('bar'))),
         ("J. Ellis",
          AndOp(ValueQuery(Value('J.')), ValueQuery(Value('Ellis')))),
         ("$e^{+}e^{-}$",
@@ -90,21 +111,26 @@ class TestParser(object):
         ("year: 2000->2012",
          KeywordOp(Keyword('year'), RangeOp(Value('2000'), Value('2012')))),
         ("year: 2000-10->2012-09",
-         KeywordOp(Keyword('year'), RangeOp(Value('2000-10'), Value('2012-09')))),
+         KeywordOp(Keyword('year'), RangeOp(Value('2000-10'),
+                                            Value('2012-09')))),
         ("cited: 3->30",
          KeywordOp(Keyword('cited'), RangeOp(Value('3'), Value('30')))),
         ('author: Albert->John',
-         KeywordOp(Keyword('author'), RangeOp(Value('Albert'), Value('John')))),
+         KeywordOp(Keyword('author'), RangeOp(Value('Albert'),
+                                              Value('John')))),
         ('author: "Albert"->John',
-         KeywordOp(Keyword('author'), RangeOp(DoubleQuotedValue('Albert'), Value('John')))),
+         KeywordOp(Keyword('author'), RangeOp(DoubleQuotedValue('Albert'),
+                                              Value('John')))),
         ('author: Albert->"John"',
-         KeywordOp(Keyword('author'), RangeOp(Value('Albert'), DoubleQuotedValue('John')))),
+         KeywordOp(Keyword('author'), RangeOp(Value('Albert'),
+                                              DoubleQuotedValue('John')))),
         ('author: "Albert"->"John"',
-         KeywordOp(Keyword('author'), RangeOp(DoubleQuotedValue('Albert'), DoubleQuotedValue('John')))),
+         KeywordOp(Keyword('author'), RangeOp(DoubleQuotedValue('Albert'),
+                                              DoubleQuotedValue('John')))),
 
         # Star patterns
         ("bar*",
-          ValueQuery(Value('bar*'))),
+         ValueQuery(Value('bar*'))),
         ("foo: hello*",
          KeywordOp(Keyword('foo'), Value('hello*'))),
         ("foo: 'hello*'",
@@ -140,25 +166,34 @@ class TestParser(object):
 
         # Combined queries
         ("foo:bar foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo:bar and foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo:bar AND foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo and bar",
          AndOp(ValueQuery(Value('foo')), ValueQuery(Value('bar')))),
         ("foo:bar or foo:bar",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo:bar | foo:bar",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo:bar not foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
         ("foo:bar and not foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
         ("foo:bar -foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar')), NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+               NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
         ("foo:bar- foo:bar",
-         AndOp(KeywordOp(Keyword('foo'), Value('bar-')), KeywordOp(Keyword('foo'), Value('bar')))),
+         AndOp(KeywordOp(Keyword('foo'), Value('bar-')),
+               KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar)",
          KeywordOp(Keyword('foo'), Value('bar'))),
         ("((foo:bar))",
@@ -166,51 +201,61 @@ class TestParser(object):
         ("(((foo:bar)))",
          KeywordOp(Keyword('foo'), Value('bar'))),
         ("(foo:bar) or foo:bar",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("foo:bar or (foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar) or (foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar)or(foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar)|(foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar)| (foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("( foo:bar) or ( foo:bar)",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo:bar) or (foo:bar )",
-         OrOp(KeywordOp(Keyword('foo'), Value('bar')), KeywordOp(Keyword('foo'), Value('bar')))),
+         OrOp(KeywordOp(Keyword('foo'), Value('bar')),
+              KeywordOp(Keyword('foo'), Value('bar')))),
         ("(foo1:bar1 or foo2:bar2) and (foo3:bar3 or foo4:bar4)",
-         AndOp(OrOp(KeywordOp(Keyword('foo1'), Value('bar1')), KeywordOp(Keyword('foo2'), Value('bar2'))),
-               OrOp(KeywordOp(Keyword('foo3'), Value('bar3')), KeywordOp(Keyword('foo4'), Value('bar4'))))),
+         AndOp(OrOp(KeywordOp(Keyword('foo1'), Value('bar1')),
+                    KeywordOp(Keyword('foo2'), Value('bar2'))),
+               OrOp(KeywordOp(Keyword('foo3'), Value('bar3')),
+                    KeywordOp(Keyword('foo4'), Value('bar4'))))),
         ("foo:bar and foo:bar and foo:bar",
             AndOp(AndOp(KeywordOp(Keyword('foo'), Value('bar')),
                         KeywordOp(Keyword('foo'), Value('bar'))),
                   KeywordOp(Keyword('foo'), Value('bar')))),
         ("aaa +bbb -ccc +ddd",
-         AndOp(
-            AndOp(
-                AndOp(
-                    ValueQuery(Value('aaa')),
-                    ValueQuery(Value('bbb'))
-                ),
-                NotOp(ValueQuery(Value('ccc')))
-            ),
-            ValueQuery(Value('ddd'))
-         )),
+         AndOp(AndOp(AndOp(ValueQuery(Value('aaa')),
+                           ValueQuery(Value('bbb'))),
+                     NotOp(ValueQuery(Value('ccc')))),
+               ValueQuery(Value('ddd')))),
 
         # Nested searches
         ("refersto:author:Ellis",
-         KeywordOp(Keyword('refersto'), KeywordOp(Keyword('author'), Value('Ellis')))),
+         KeywordOp(Keyword('refersto'), KeywordOp(Keyword('author'),
+                                                  Value('Ellis')))),
         ("refersto:refersto:author:Ellis",
-         KeywordOp(Keyword('refersto'), KeywordOp(Keyword('refersto'), KeywordOp(Keyword('author'), Value('Ellis'))))),
+         KeywordOp(Keyword('refersto'),
+                   KeywordOp(Keyword('refersto'),
+                             KeywordOp(Keyword('author'), Value('Ellis'))))),
         ("refersto:(foo:bar)",
-         KeywordOp(Keyword('refersto'), KeywordOp(Keyword('foo'), Value('bar')))),
+         KeywordOp(Keyword('refersto'), KeywordOp(Keyword('foo'),
+                                                  Value('bar')))),
         ("refersto:(foo:bar and Ellis)",
-         KeywordOp(Keyword('refersto'), AndOp(KeywordOp(Keyword('foo'), Value('bar')), ValueQuery(Value('Ellis'))))),
+         KeywordOp(Keyword('refersto'),
+                   AndOp(KeywordOp(Keyword('foo'), Value('bar')),
+                         ValueQuery(Value('Ellis'))))),
 
-        ### Spires syntax ###
+        # Spires syntax #
 
         # Simple query
         ("find t quark",
@@ -246,32 +291,34 @@ class TestParser(object):
 
         # Combined queries
         ("find t quark and a ellis",
-         AndOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         AndOp(SpiresOp(Keyword('t'), Value('quark')),
+               SpiresOp(Keyword('a'), Value('ellis')))),
         ("find t quark or a ellis",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
         ("find (t aaa or t bbb or t ccc)or t ddd",
-         OrOp(
-            OrOp(
-                OrOp(
-                    SpiresOp(Keyword('t'), Value('aaa')),
-                    SpiresOp(Keyword('t'), Value('bbb'))
-                ),
-                SpiresOp(Keyword('t'), Value('ccc'))
-            ),
-            SpiresOp(Keyword('t'), Value('ddd'))
-         )),
+         OrOp(OrOp(OrOp(SpiresOp(Keyword('t'), Value('aaa')),
+                        SpiresOp(Keyword('t'), Value('bbb'))),
+                   SpiresOp(Keyword('t'), Value('ccc'))),
+              SpiresOp(Keyword('t'), Value('ddd')))),
         ("find a:richter and t quark",
-         AndOp(SpiresOp(Keyword('a'), Value('richter')), SpiresOp(Keyword('t'), Value('quark')))),
+         AndOp(SpiresOp(Keyword('a'), Value('richter')),
+               SpiresOp(Keyword('t'), Value('quark')))),
         ("find (t quark) or (a ellis)",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
         ("find (t quark or a ellis)",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
         ("find ((t quark) or (a ellis))",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
         ("find (( t quark )or( a ellis ))",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
         ("find (( t quark )or( a:ellis ))",
-         OrOp(SpiresOp(Keyword('t'), Value('quark')), SpiresOp(Keyword('a'), Value('ellis')))),
+         OrOp(SpiresOp(Keyword('t'), Value('quark')),
+              SpiresOp(Keyword('a'), Value('ellis')))),
 
         # Implicit keyword
         ("find a john and ellis",
@@ -283,80 +330,65 @@ class TestParser(object):
                     ValueQuery(Value('albert'))))),
         ("find a john and t quark or higgs",
          OrOp(AndOp(SpiresOp(Keyword('a'), Value('john')),
-                     SpiresOp(Keyword('t'), Value('quark'))),
-               SpiresOp(Keyword('t'), Value('higgs')))),
+                    SpiresOp(Keyword('t'), Value('quark'))),
+              SpiresOp(Keyword('t'), Value('higgs')))),
         ("find john and t quark or higgs",
          OrOp(AndOp(ValueQuery(Value('john')),
                     SpiresOp(Keyword('t'), Value('quark'))),
               SpiresOp(Keyword('t'), Value('higgs')))),
-        ("find a l everett or t light higgs and j phys.rev.lett. and primarch hep-ph",
-         AndOp(
-            AndOp(
-                OrOp(
-                    SpiresOp(Keyword('a'), Value('l everett')),
-                    SpiresOp(Keyword('t'), Value('light higgs'))
-                ),
-                SpiresOp(Keyword('j'), Value('phys.rev.lett.'))
-            ),
-            SpiresOp(Keyword('primarch'), Value('hep-ph'))
-         )),
+        ("find a l everett or t light higgs and j phys.rev.lett. and "
+         "primarch hep-ph",
+         AndOp(AndOp(OrOp(SpiresOp(Keyword('a'), Value('l everett')),
+                          SpiresOp(Keyword('t'), Value('light higgs'))),
+                     SpiresOp(Keyword('j'), Value('phys.rev.lett.'))),
+               SpiresOp(Keyword('primarch'), Value('hep-ph')))),
         ("find a l everett or t light higgs and j phys.rev.lett. and monkey",
-         AndOp(
-            AndOp(
-                OrOp(
-                    SpiresOp(Keyword('a'), Value('l everett')),
-                    SpiresOp(Keyword('t'), Value('light higgs'))
-                ),
-                SpiresOp(Keyword('j'), Value('phys.rev.lett.'))
-            ),
-            SpiresOp(Keyword('j'), Value('monkey'))
-         )),
+         AndOp(AndOp(OrOp(SpiresOp(Keyword('a'), Value('l everett')),
+                          SpiresOp(Keyword('t'), Value('light higgs'))),
+                     SpiresOp(Keyword('j'), Value('phys.rev.lett.'))),
+               SpiresOp(Keyword('j'), Value('monkey')))),
 
         # Nested searches
         ("find refersto a ellis",
-         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value('ellis')))),
+         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'),
+                                                Value('ellis')))),
         ("find refersto j Phys.Rev.Lett.",
-         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('j'), Value('Phys.Rev.Lett.')))),
+         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('j'),
+                                                Value('Phys.Rev.Lett.')))),
         ("find refersto a ellis, j",
-         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value('ellis, j')))),
+         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'),
+                                                Value('ellis, j')))),
         ("find refersto ellis, j",
          SpiresOp(Keyword('refersto'), ValueQuery(Value('ellis, j')))),
         ("find a parke, s j and refersto author witten",
-         AndOp(
-            SpiresOp(
-                Keyword('a'),
-                Value("parke, s j")
-            ),
-            SpiresOp(
-                Keyword('refersto'),
-                SpiresOp(
-                    Keyword('author'),
-                    Value('witten')
-                )
-            )
-         )),
+         AndOp(SpiresOp(Keyword('a'), Value("parke, s j")),
+               SpiresOp(Keyword('refersto'), SpiresOp(Keyword('author'),
+                                                      Value('witten'))))),
         ("fin af oxford u. and refersto title muon*",
-         AndOp(SpiresOp(Keyword('af'), Value("oxford u.")), SpiresOp(Keyword('refersto'), SpiresOp(Keyword('title'), Value('muon*'))))),
+         AndOp(SpiresOp(Keyword('af'), Value("oxford u.")),
+               SpiresOp(Keyword('refersto'),
+               SpiresOp(Keyword('title'), Value('muon*'))))),
         ("find refersto a parke or refersto a lykken and a witten",
-         AndOp(
-            OrOp(
-                SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value("parke"))),
-                SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value('lykken')))
-            ),
-            SpiresOp(Keyword('a'), Value('witten'))
-         )),
+         AndOp(OrOp(SpiresOp(Keyword('refersto'),
+                             SpiresOp(Keyword('a'), Value("parke"))),
+                    SpiresOp(Keyword('refersto'),
+                             SpiresOp(Keyword('a'), Value('lykken')))),
+               SpiresOp(Keyword('a'), Value('witten')))),
         ("find refersto:refersto:author:maldacena",
          SpiresOp(Keyword('refersto'),
                   SpiresOp(Keyword('refersto'),
                            SpiresOp(Keyword('author'),
                                     Value('maldacena'))))),
         ("find refersto hep-th/9711200 and t nucl*",
-         AndOp(SpiresOp(Keyword('refersto'), ValueQuery(Value("hep-th/9711200"))),
+         AndOp(SpiresOp(Keyword('refersto'),
+                        ValueQuery(Value("hep-th/9711200"))),
                SpiresOp(Keyword('t'), Value('nucl*')))),
         ("find refersto:a ellis",
-         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value('ellis')))),
+         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'),
+                                                Value('ellis')))),
         ("find refersto: a ellis",
-         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'), Value('ellis')))),
+         SpiresOp(Keyword('refersto'), SpiresOp(Keyword('a'),
+                                                Value('ellis')))),
 
         # Greater, Lower Ops
         ("find date > 1984",
@@ -385,20 +417,19 @@ class TestParser(object):
          KeywordOp(Keyword('arXiv'), Value("1004.0648"))),
         ("find ea chowdhury, borun d",
          SpiresOp(Keyword('ea'), Value("chowdhury, borun d"))),
-        ("(author:'Hiroshi Okada' OR (author:'H Okada' hep-ph) OR title: 'Dark matter in supersymmetric U(1(B-L) model' OR title: 'Non-Abelian discrete symmetry for flavors')",
-         OrOp(
-            OrOp(
-                OrOp(
-                    KeywordOp(Keyword('author'), SingleQuotedValue('Hiroshi Okada')),
-                    AndOp(
-                        KeywordOp(Keyword('author'), SingleQuotedValue('H Okada')),
-                        ValueQuery(Value('hep-ph'))
-                    )
-                ),
-                KeywordOp(Keyword('title'), SingleQuotedValue('Dark matter in supersymmetric U(1(B-L) model')),
-            ),
-            KeywordOp(Keyword('title'), SingleQuotedValue('Non-Abelian discrete symmetry for flavors'))
-         )),
+        ("(author:'Hiroshi Okada' OR (author:'H Okada' hep-ph) OR "
+         "title: 'Dark matter in supersymmetric U(1(B-L) model' OR "
+         "title: 'Non-Abelian discrete symmetry for flavors')",
+         OrOp(OrOp(OrOp(KeywordOp(Keyword('author'),
+                                  SingleQuotedValue('Hiroshi Okada')),
+                        AndOp(KeywordOp(Keyword('author'),
+                                        SingleQuotedValue('H Okada')),
+                              ValueQuery(Value('hep-ph')))),
+                   KeywordOp(Keyword('title'),
+                             SingleQuotedValue('Dark matter in supersymmetric '
+                                               'U(1(B-L) model'))),
+              KeywordOp(Keyword('title'), SingleQuotedValue(
+                  'Non-Abelian discrete symmetry for flavors')))),
         ("f a Oleg Antipin",
          SpiresOp(Keyword('a'), Value('Oleg Antipin'))),
         ("FIND a Oleg Antipin",

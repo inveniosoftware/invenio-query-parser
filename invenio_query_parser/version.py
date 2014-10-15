@@ -21,29 +21,13 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Store the actual visitor methods."""
+"""Version information for *Invenio Query Parser* package.
 
+This file is imported by ``invenio_query_parser.__init__``, and parsed by
+``setup.py`` as well as ``docs/conf.py``.
+"""
 
-def make_visitor():
-    """Make a visitor decorator."""
-    _methods = {}
+# Do not change the format of this next line. Doing so risks breaking
+# setup.py and docs/conf.py
 
-    # The actual @visitor decorator
-    def _visitor(arg_type):
-        """Decorator that creates a visitor method."""
-
-        # Delegating visitor implementation
-
-        def _visitor_impl(self, arg, *args, **kwargs):
-            """Actual visitor method implementation."""
-            method = _methods[type(arg)]
-            return method(self, arg, *args, **kwargs)
-
-        def decorator(fn):
-            _methods[arg_type] = fn
-            # Replace all decorated methods with _visitor_impl
-            return _visitor_impl
-
-        return decorator
-
-    return _visitor
+__version__ = "0.1.1.dev20141015"
