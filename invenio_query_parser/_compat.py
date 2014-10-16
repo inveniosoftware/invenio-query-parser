@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Invenio Query Parser.
 # Copyright (C) 2014 CERN.
 #
@@ -19,28 +21,11 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-language: python
+"""Minimal py2/py3 compatibility support."""
 
-python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
+import sys
 
-before_install:
-  - sudo apt-get -qqy update
-
-install:
-  - pip install --upgrade pip  --use-mirrors
-  - pip install coveralls pep257 --use-mirrors
-  - pip install pytest pytest-pep8 pytest-cov pytest-cache --use-mirrors
-  - pip install -e . --allow-all-external --allow-unverified pypeg2
-
-script:
-  - python setup.py test
-
-after_success:
-  - coveralls
-
-notifications:
-  email: false
+if sys.version_info[0] == 3:  # pragma: no cover (Python 2/3 specific code)
+    string_types = str,
+else:  # pragma: no cover (Python 2/3 specific code)
+    string_types = basestring,

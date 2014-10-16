@@ -23,6 +23,8 @@
 
 """Define parsers."""
 
+from __future__ import absolute_import
+
 import pypeg2
 import re
 
@@ -30,6 +32,7 @@ from pypeg2 import (Keyword, maybe_some, optional, attr,
                     Literal, omit, some)
 
 from . import ast
+from ._compat import string_types
 
 SPIRES_KEYWORDS = {
     # address
@@ -314,7 +317,7 @@ class SimpleValueUnit(LeafRule):
 
     def __init__(self, args):
         super(SimpleValueUnit, self).__init__()
-        if isinstance(args, basestring):
+        if isinstance(args, string_types):
             self.value = args
         else:
             self.value = args[0] + args[1].value + args[2]
@@ -338,7 +341,7 @@ class SpiresSimpleValueUnit(LeafRule):
 
     def __init__(self, args):
         super(SpiresSimpleValueUnit, self).__init__()
-        if isinstance(args, basestring):
+        if isinstance(args, string_types):
             self.value = args
         else:
             self.value = args[0] + args[1].value + args[2]
