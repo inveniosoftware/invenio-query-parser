@@ -9,6 +9,8 @@ Invenio Query Parser
    :target: https://pypi.python.org/pypi/invenio-query-parser/
 .. image:: https://pypip.in/d/invenio-query-parser/badge.png
    :target: https://pypi.python.org/pypi/invenio-query-parser/
+.. image:: https://readthedocs.org/projects/invenio-query-parser/badge/?version=latest
+   :target: https://invenio-query-parser.readthedocs.org/
 
 
 About
@@ -20,7 +22,7 @@ Parser for Invenio and Spires syntax using *pypeg2*.
 Installation
 ============
 
-Dictdiffer is on PyPI so all you need is: ::
+Invenio Query Parser is on PyPI so all you need is: ::
 
     pip install invenio-query-parser
 

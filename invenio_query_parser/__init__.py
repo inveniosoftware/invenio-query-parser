@@ -25,4 +25,4 @@
 
 from .parser import (SpiresToInvenioSyntaxConverter, load_walkers)
 
-__all__ = ('SpiresToInvenioSyntaxConverter', 'load_warkers')
+__all__ = ('SpiresToInvenioSyntaxConverter', 'load_walkers')

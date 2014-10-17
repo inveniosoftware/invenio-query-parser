@@ -20,7 +20,7 @@
     granted to it by virtue of its status as an Intergovernmental Organization
     or submit itself to any jurisdiction.
 
-AUTHORS
+Authors
 =======
 
 Invenio Query Parser is developed to support developers of
