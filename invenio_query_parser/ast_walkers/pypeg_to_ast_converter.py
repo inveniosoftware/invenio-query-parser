@@ -1,6 +1,31 @@
-from invenio_query_parser.visitor import make_visitor
-from invenio_query_parser import ast
-from invenio_query_parser import parser
+# -*- coding: utf-8 -*-
+#
+# This file is part of Invenio Query Parser.
+# Copyright (C) 2014 CERN.
+#
+# Invenio Query Parser is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of the
+# License, or (at your option) any later version.
+#
+# Invenio Query Parser is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Invenio; if not, write to the Free Software Foundation, Inc.,
+# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+#
+# In applying this licence, CERN does not waive the privileges and immunities
+# granted to it by virtue of its status as an Intergovernmental Organization
+# or submit itself to any jurisdiction.
+
+"""Implement Pypeg to AST converter."""
+
+from .. import ast, parser
+from ..contrib.spires import parser as spires_parser
+from ..visitor import make_visitor
 
 
 class PypegConverter(object):
@@ -28,7 +53,7 @@ class PypegConverter(object):
     def visit(self, node):
         return ast.Keyword(node.value)
 
-    @visitor(parser.SpiresKeywordRule)
+    @visitor(spires_parser.SpiresKeywordRule)
     def visit(self, node):
         return ast.Keyword(node.value)
 
@@ -60,19 +85,19 @@ class PypegConverter(object):
     def visit(self, node, left, right):
         return ast.RangeOp(left, right)
 
-    @visitor(parser.GreaterQuery)
+    @visitor(spires_parser.GreaterQuery)
     def visit(self, node, child):
         return ast.GreaterOp(child)
 
-    @visitor(parser.GreaterEqualQuery)
+    @visitor(spires_parser.GreaterEqualQuery)
     def visit(self, node, child):
         return ast.GreaterEqualOp(child)
 
-    @visitor(parser.LowerQuery)
+    @visitor(spires_parser.LowerQuery)
     def visit(self, node, child):
         return ast.LowerOp(child)
 
-    @visitor(parser.LowerEqualQuery)
+    @visitor(spires_parser.LowerEqualQuery)
     def visit(self, node, child):
         return ast.LowerEqualOp(child)
 
@@ -88,35 +113,35 @@ class PypegConverter(object):
     def visit(self, node):
         return ast.Keyword(node.value)
 
-    @visitor(parser.SpiresSimpleValue)
+    @visitor(spires_parser.SpiresSimpleValue)
     def visit(self, node):
         return ast.Value(node.value)
 
-    @visitor(parser.SpiresValue)
+    @visitor(spires_parser.SpiresValue)
     def visit(self, node, children):
         return ast.Value("".join([c.value for c in children]))
 
-    @visitor(parser.SpiresValueQuery)
+    @visitor(spires_parser.SpiresValueQuery)
     def visit(self, node, child):
         return ast.ValueQuery(child)
 
-    @visitor(parser.SpiresSimpleQuery)
+    @visitor(spires_parser.SpiresSimpleQuery)
     def visit(self, node, child):
         return child
 
-    @visitor(parser.SpiresParenthesizedQuery)
+    @visitor(spires_parser.SpiresParenthesizedQuery)
     def visit(self, node, child):
         return child
 
-    @visitor(parser.SpiresNotQuery)
+    @visitor(spires_parser.SpiresNotQuery)
     def visit(self, node, child):
         return ast.AndOp(None, ast.NotOp(child))
 
-    @visitor(parser.SpiresAndQuery)
+    @visitor(spires_parser.SpiresAndQuery)
     def visit(self, node, child):
         return ast.AndOp(None, child)
 
-    @visitor(parser.SpiresOrQuery)
+    @visitor(spires_parser.SpiresOrQuery)
     def visit(self, node, child):
         return ast.OrOp(None, child)
 
@@ -124,7 +149,7 @@ class PypegConverter(object):
     def visit(self, node, child):
         return ast.ValueQuery(child)
 
-    @visitor(parser.SpiresKeywordQuery)
+    @visitor(spires_parser.SpiresKeywordQuery)
     def visit(self, node, keyword, value):
         return ast.SpiresOp(keyword, value)
 
@@ -166,7 +191,7 @@ class PypegConverter(object):
             tree = booleanNode
         return tree
 
-    @visitor(parser.SpiresQuery)
+    @visitor(spires_parser.SpiresQuery)
     def visit(self, node, children):
         # Assign implicit keyword
         # find author x and y --> find author x and author y
@@ -201,7 +226,7 @@ class PypegConverter(object):
             tree = booleanNode
         return tree
 
-    @visitor(parser.FindQuery)
+    @visitor(spires_parser.FindQuery)
     def visit(self, node, child):
         return child
 
@@ -210,6 +235,10 @@ class PypegConverter(object):
         return ast.EmptyQuery(node.value)
 
     @visitor(parser.Main)
+    def visit(self, node, child):
+        return child
+
+    @visitor(spires_parser.Main)
     def visit(self, node, child):
         return child
 

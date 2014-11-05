@@ -25,7 +25,8 @@
 
 from pytest import generate_tests
 
-from invenio_query_parser import SpiresToInvenioSyntaxConverter, load_walkers
+from invenio_query_parser.ast_walkers import spires_to_invenio_converter
+from invenio_query_parser.contrib.spires import converter
 from invenio_query_parser.ast import KeywordOp, Keyword, Value, GreaterOp
 
 
@@ -44,8 +45,8 @@ class TestSpiresToInvenio(object):
 
     @classmethod
     def setup_class(cls):
-        cls.walker = load_walkers().SpiresToInvenio
-        cls.parser = SpiresToInvenioSyntaxConverter()
+        cls.walker = spires_to_invenio_converter.SpiresToInvenio
+        cls.parser = converter.SpiresToInvenioSyntaxConverter()
 
     queries = (
         ("find t quark",

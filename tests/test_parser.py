@@ -27,21 +27,18 @@ from __future__ import unicode_literals
 
 from pytest import generate_tests
 
-from invenio_query_parser import SpiresToInvenioSyntaxConverter, load_walkers
-from invenio_query_parser.ast import (AndOp, KeywordOp, OrOp,
-                                      NotOp, Keyword, Value,
-                                      SingleQuotedValue, NotOp,
-                                      DoubleQuotedValue, ValueQuery,
-                                      RegexValue, RangeOp, SpiresOp,
-                                      GreaterOp, GreaterEqualOp,
-                                      LowerOp, LowerEqualOp,
-                                      EmptyQuery)
+from invenio_query_parser.ast import (
+    AndOp, KeywordOp, OrOp, NotOp, Keyword, Value, SingleQuotedValue,
+    DoubleQuotedValue, ValueQuery, RegexValue, RangeOp, EmptyQuery,
+    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp, SpiresOp
+)
 
 
 def generate_parser_test(query, expected):
     def func(self):
+        from invenio_query_parser.ast_walkers import repr_printer
         tree = self.parser.parse_query(query)
-        printer = load_walkers().TreeRepr()
+        printer = repr_printer.TreeRepr()
         assert tree == expected, "parsed tree: %s\nexpected tree: %s" % (
             tree.accept(printer), expected.accept(printer))
     return func
@@ -53,7 +50,8 @@ class TestParser(object):
 
     @classmethod
     def setup_class(cls):
-        cls.parser = SpiresToInvenioSyntaxConverter()
+        from invenio_query_parser.contrib.spires import converter
+        cls.parser = converter.SpiresToInvenioSyntaxConverter()
 
     queries = (
         ("",

@@ -21,6 +21,25 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""API for Invenio Query Parser."""
+"""SPIRES to Invenio query converter."""
 
-from .version import __version__
+import pypeg2
+
+from invenio_query_parser.ast_walkers import pypeg_to_ast_converter
+from invenio_query_parser.ast_walkers import repr_printer
+
+from .parser import Main
+
+
+class SpiresToInvenioSyntaxConverter(object):
+    def __init__(self):
+        self.converter = pypeg_to_ast_converter.PypegConverter()
+        self.printer = repr_printer.TreeRepr()
+
+    def parse_query(self, query):
+        """Parse query string using given grammar"""
+        tree = pypeg2.parse(query, Main, whitespace="")
+        return tree.accept(self.converter)
+
+    def convert_query(self, query):
+        return self.parse_query(query).accept(self.printer)

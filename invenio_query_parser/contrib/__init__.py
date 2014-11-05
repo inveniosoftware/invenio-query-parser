@@ -21,6 +21,4 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""API for Invenio Query Parser."""
-
-from .version import __version__
+"""Extensions and contributions to Invenio Query Parser."""
