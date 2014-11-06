@@ -50,3 +50,17 @@ class TestVisitor(object):
 
     def test_visit_b(self):
         assert self.visit(B()) == 'B'
+
+
+class TestVisitorInheritance(TestVisitor):
+    visitor = make_visitor(TestVisitor.visitor)
+
+    @visitor(B)
+    def visit(self, el):
+        return 'BB'
+
+    def test_visit_a(self):
+        assert self.visit(A()) == 'A'
+
+    def test_visit_b(self):
+        assert self.visit(B()) == 'BB'

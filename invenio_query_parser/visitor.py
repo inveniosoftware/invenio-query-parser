@@ -24,26 +24,35 @@
 """Store the actual visitor methods."""
 
 
-def make_visitor():
+class make_visitor(object):
     """Make a visitor decorator."""
-    _methods = {}
+
+    def __init__(self, methods=None):
+        self._methods = {}
+        self.methods = methods or {}
+
+    def __getitem__(self, key):
+        if key in self._methods:
+            return self._methods[key]
+        return self.methods[key]
+
+    def __setitem__(self, key, value):
+        self._methods[key] = value
 
     # The actual @visitor decorator
-    def _visitor(arg_type):
+    def __call__(self, arg_type):
         """Decorator that creates a visitor method."""
 
         # Delegating visitor implementation
 
-        def _visitor_impl(self, arg, *args, **kwargs):
+        def _visitor_impl(new_self, arg, *args, **kwargs):
             """Actual visitor method implementation."""
-            method = _methods[type(arg)]
-            return method(self, arg, *args, **kwargs)
+            method = self[type(arg)]
+            return method(new_self, arg, *args, **kwargs)
 
         def decorator(fn):
-            _methods[arg_type] = fn
+            self[arg_type] = fn
             # Replace all decorated methods with _visitor_impl
             return _visitor_impl
 
         return decorator
-
-    return _visitor
