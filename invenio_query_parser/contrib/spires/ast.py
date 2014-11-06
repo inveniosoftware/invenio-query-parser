@@ -21,36 +21,12 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Unit tests for the search engine query parsers."""
+"""Define abstract SPIRES classes."""
 
-from pytest import generate_tests
-
-from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
-from invenio_query_parser.contrib.spires import converter
-from invenio_query_parser.ast import KeywordOp, Keyword, Value, GreaterOp
+from invenio_query_parser.ast import BinaryOp
 
 
-def generate_walker_test(query, expected):
-    def func(self):
-        tree = self.parser.parse_query(query)
-        new_tree = tree.accept(self.walker())
-        assert new_tree == expected
-    return func
-
-
-@generate_tests(generate_walker_test)  # pylint: disable=R0903
-class TestSpiresToInvenio(object):
-
-    """Test parser functionality."""
-
-    @classmethod
-    def setup_class(cls):
-        cls.walker = spires_to_invenio.SpiresToInvenio
-        cls.parser = converter.SpiresToInvenioSyntaxConverter()
-
-    queries = (
-        ("find t quark",
-         KeywordOp(Keyword('title'), Value('quark'))),
-        ("find d after yesterday",
-         KeywordOp(Keyword('year'), GreaterOp(Value('yesterday')))),
-    )
+class SpiresOp(BinaryOp):
+    @property
+    def keyword(self):
+        return self.left

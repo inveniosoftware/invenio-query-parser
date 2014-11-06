@@ -21,36 +21,18 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Unit tests for the search engine query parsers."""
+"""SPIRES extended repr printer."""
 
-from pytest import generate_tests
+from invenio_query_parser.walkers import printer
+from invenio_query_parser.visitor import make_visitor
 
-from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
-from invenio_query_parser.contrib.spires import converter
-from invenio_query_parser.ast import KeywordOp, Keyword, Value, GreaterOp
-
-
-def generate_walker_test(query, expected):
-    def func(self):
-        tree = self.parser.parse_query(query)
-        new_tree = tree.accept(self.walker())
-        assert new_tree == expected
-    return func
+from .. import parser
+from ..ast import SpiresOp
 
 
-@generate_tests(generate_walker_test)  # pylint: disable=R0903
-class TestSpiresToInvenio(object):
+class TreePrinter(printer.TreePrinter):
+    visitor = make_visitor(repr_printer.TreePrinter.visitor)
 
-    """Test parser functionality."""
-
-    @classmethod
-    def setup_class(cls):
-        cls.walker = spires_to_invenio.SpiresToInvenio
-        cls.parser = converter.SpiresToInvenioSyntaxConverter()
-
-    queries = (
-        ("find t quark",
-         KeywordOp(Keyword('title'), Value('quark'))),
-        ("find d after yesterday",
-         KeywordOp(Keyword('year'), GreaterOp(Value('yesterday')))),
-    )
+    @visitor(SpiresOp)
+    def visit(self, node, left, right):
+        return "find %s %s" % (left, right)

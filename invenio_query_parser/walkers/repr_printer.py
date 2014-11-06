@@ -21,19 +21,17 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Implement query printer."""
+"""Implement representation printer."""
 
 from ..ast import (
-    AndOp, KeywordOp, OrOp,
-    NotOp, Keyword, Value,
-    SingleQuotedValue,
-    DoubleQuotedValue,
-    RegexValue, RangeOp, SpiresOp
+    AndOp, KeywordOp, OrOp, NotOp, Keyword, Value, SingleQuotedValue,
+    DoubleQuotedValue, ValueQuery, RegexValue, RangeOp, EmptyQuery,
+    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp
 )
 from ..visitor import make_visitor
 
 
-class TreePrinter(object):
+class TreeRepr(object):
     visitor = make_visitor()
 
     # pylint: disable=W0613,E0102
@@ -56,11 +54,15 @@ class TreePrinter(object):
 
     @visitor(Keyword)
     def visit(self, node):
-        return '%s' % node.value
+        return '`%s`' % node.value
 
     @visitor(Value)
     def visit(self, node):
-        return "%s" % node.value
+        return "'%s'" % node.value
+
+    @visitor(ValueQuery)
+    def visit(self, node, query):
+        return query
 
     @visitor(SingleQuotedValue)
     def visit(self, node):
@@ -78,8 +80,24 @@ class TreePrinter(object):
     def visit(self, node, left, right):
         return "%s->%s" % (left, right)
 
-    @visitor(SpiresOp)
-    def visit(self, node, left, right):
-        return "find %s %s" % (left, right)
+    @visitor(GreaterOp)
+    def visit(self, node, op):
+        return '> %s' % op
+
+    @visitor(GreaterEqualOp)
+    def visit(self, node, op):
+        return '>= %s' % op
+
+    @visitor(LowerOp)
+    def visit(self, node, op):
+        return '< %s' % op
+
+    @visitor(LowerEqualOp)
+    def visit(self, node, op):
+        return '<= %s' % op
+
+    @visitor(EmptyQuery)
+    def visit(self, node):
+        return '__empty__'
 
     # pylint: enable=W0612,E0102

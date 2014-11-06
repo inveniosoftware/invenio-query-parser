@@ -23,75 +23,59 @@
 
 """Implement query printer."""
 
-from invenio_query_parser.visitor import make_visitor
-from invenio_query_parser.contrib.spires.config import SPIRES_KEYWORDS
-from invenio_query_parser import ast
+from ..ast import (
+    AndOp, KeywordOp, OrOp,
+    NotOp, Keyword, Value,
+    SingleQuotedValue,
+    DoubleQuotedValue,
+    RegexValue, RangeOp
+)
+from ..visitor import make_visitor
 
 
-class SpiresToInvenio(object):
+class TreePrinter(object):
     visitor = make_visitor()
 
     # pylint: disable=W0613,E0102
 
-    @visitor(ast.AndOp)
+    @visitor(AndOp)
     def visit(self, node, left, right):
-        return type(node)(left, right)
+        return '(%s and %s)' % (left, right)
 
-    @visitor(ast.OrOp)
+    @visitor(OrOp)
     def visit(self, node, left, right):
-        return type(node)(left, right)
+        return '(%s or %s)' % (left, right)
 
-    @visitor(ast.KeywordOp)
+    @visitor(NotOp)
+    def visit(self, node, op):
+        return '(not %s)' % op
+
+    @visitor(KeywordOp)
     def visit(self, node, left, right):
-        return type(node)(left, right)
+        return '%s:%s' % (left, right)
 
-    @visitor(ast.RangeOp)
+    @visitor(Keyword)
+    def visit(self, node):
+        return '%s' % node.value
+
+    @visitor(Value)
+    def visit(self, node):
+        return "%s" % node.value
+
+    @visitor(SingleQuotedValue)
+    def visit(self, node):
+        return "'%s'" % node.value
+
+    @visitor(DoubleQuotedValue)
+    def visit(self, node):
+        return '"%s"' % node.value
+
+    @visitor(RegexValue)
+    def visit(self, node):
+        return "/%s/" % node.value
+
+    @visitor(RangeOp)
     def visit(self, node, left, right):
-        return type(node)(left, right)
-
-    @visitor(ast.NotOp)
-    def visit(self, node, op):
-        return type(node)(op)
-
-    @visitor(ast.GreaterOp)
-    def visit(self, node, op):
-        return type(node)(op)
-
-    @visitor(ast.LowerOp)
-    def visit(self, node, op):
-        return type(node)(op)
-
-    @visitor(ast.GreaterEqualOp)
-    def visit(self, node, op):
-        return type(node)(op)
-
-    @visitor(ast.LowerEqualOp)
-    def visit(self, node, op):
-        return type(node)(op)
-
-    @visitor(ast.Keyword)
-    def visit(self, node):
-        return type(node)(node.value)
-
-    @visitor(ast.Value)
-    def visit(self, node):
-        return type(node)(node.value)
-
-    @visitor(ast.SingleQuotedValue)
-    def visit(self, node):
-        return type(node)(node.value)
-
-    @visitor(ast.DoubleQuotedValue)
-    def visit(self, node):
-        return type(node)(node.value)
-
-    @visitor(ast.RegexValue)
-    def visit(self, node):
-        return type(node)(node.value)
-
-    @visitor(ast.SpiresOp)
-    def visit(self, node, left, right):
-        left.value = SPIRES_KEYWORDS[left.value]
-        return ast.KeywordOp(left, right)
+        return "%s->%s" % (left, right)
 
     # pylint: enable=W0612,E0102

@@ -100,6 +100,8 @@ class Leaf(object):
 class BinaryKeywordBase(BinaryOp):
     @property
     def keyword(self):
+        # FIXME evaluate if it's possible to move it out to spires module
+        from .contrib.spires.ast import SpiresOp
         if self.left:
             if isinstance(self.left, SpiresOp):
                 return self.left.keyword
@@ -144,12 +146,6 @@ class GreaterEqualOp(UnaryOp):
 
 class KeywordOp(BinaryOp):
     pass
-
-
-class SpiresOp(BinaryOp):
-    @property
-    def keyword(self):
-        return self.left
 
 
 class ValueQuery(UnaryOp):

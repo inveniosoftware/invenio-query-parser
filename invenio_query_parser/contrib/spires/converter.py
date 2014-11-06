@@ -25,15 +25,15 @@
 
 import pypeg2
 
-from invenio_query_parser.ast_walkers import pypeg_to_ast_converter
-from invenio_query_parser.ast_walkers import repr_printer
+from invenio_query_parser.walkers import repr_printer
 
+from .walkers import pypeg_to_ast
 from .parser import Main
 
 
 class SpiresToInvenioSyntaxConverter(object):
     def __init__(self):
-        self.converter = pypeg_to_ast_converter.PypegConverter()
+        self.converter = pypeg_to_ast.PypegConverter()
         self.printer = repr_printer.TreeRepr()
 
     def parse_query(self, query):

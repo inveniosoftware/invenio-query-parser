@@ -30,13 +30,15 @@ from pytest import generate_tests
 from invenio_query_parser.ast import (
     AndOp, KeywordOp, OrOp, NotOp, Keyword, Value, SingleQuotedValue,
     DoubleQuotedValue, ValueQuery, RegexValue, RangeOp, EmptyQuery,
-    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp, SpiresOp
+    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp
 )
+
+from invenio_query_parser.contrib.spires.ast import SpiresOp
 
 
 def generate_parser_test(query, expected):
     def func(self):
-        from invenio_query_parser.ast_walkers import repr_printer
+        from invenio_query_parser.walkers import repr_printer
         tree = self.parser.parse_query(query)
         printer = repr_printer.TreeRepr()
         assert tree == expected, "parsed tree: %s\nexpected tree: %s" % (
