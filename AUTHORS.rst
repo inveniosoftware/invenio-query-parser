@@ -32,3 +32,4 @@ Contact us at `info@invenio-software.org
 - Alessio Deiana <https://github.com/osso>
 - Federico Poli <https://github.com/fpoli>
 - Jiri Kuncar <https://github.com/jirikuncar>
+- Tibor Simko <https://github.com/tiborsimko>
