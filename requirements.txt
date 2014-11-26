@@ -1,3 +1,0 @@
--e git+https://github.com/osso/pypeg@a67f6ba75da71a8ee9694caaa6a4716354409fbb#egg=pypeg2
-pytest==2.6.3
--e .
