@@ -1,5 +1,6 @@
-Invenio-Query-Parser
-====================
+======================
+ Invenio-Query-Parser
+======================
 
 .. image:: https://travis-ci.org/inveniosoftware/invenio-query-parser.png?branch=master
    :target: https://travis-ci.org/inveniosoftware/invenio-query-parser
@@ -16,7 +17,7 @@ Invenio-Query-Parser
 About
 =====
 
-Parser for Invenio and Spires syntax using *pypeg2*.
+Search query parser supporting Invenio and SPIRES search syntax.
 
 
 Installation

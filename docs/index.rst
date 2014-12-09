@@ -38,7 +38,7 @@
         </a>
     </p>
 
-Parser for Invenio and Spires syntax using *pypeg2*.
+Search query parser supporting Invenio and SPIRES search syntax.
 
 Contents
 --------

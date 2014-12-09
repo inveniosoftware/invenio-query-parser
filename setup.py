@@ -21,7 +21,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Parser for Invenio and Spires syntax using *pypeg2*."""
+"""Search query parser supporting Invenio and SPIRES search syntax."""
 
 import os
 import re
@@ -78,7 +78,8 @@ setup(
     license='GPLv2',
     author='Invenio collaboration',
     author_email='info@invenio-software.org',
-    description="Parser for Invenio and Spires syntax.",
+    description="Search query parser supporting Invenio and SPIRES "
+        "search syntax.",
     long_description=__doc__,
     packages=find_packages(exclude=["tests", "docs"]),
     include_package_data=True,
