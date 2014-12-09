@@ -23,15 +23,12 @@
 Authors
 =======
 
-Invenio-Query-Parser is developed to support developers of
-`Invenio <http://invenio-software.org>`_ digital library software.
+Invenio-Query-Parser is developed for the `Invenio
+<http://invenio-software.org>`_ digital library software.
 
 Contact us at `info@invenio-software.org
 <mailto:info@invenio-software.org>`_.
 
-Contributors
-^^^^^^^^^^^^
-
-- Federico Poli <https://github.com/fpoli>
 - Alessio Deiana <https://github.com/osso>
+- Federico Poli <https://github.com/fpoli>
 - Jiri Kuncar <https://github.com/jirikuncar>
