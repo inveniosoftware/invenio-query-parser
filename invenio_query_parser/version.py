@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of Invenio Query Parser.
+# This file is part of Invenio-Query-Parser.
 # Copyright (C) 2014 CERN.
 #
-# Invenio Query Parser is free software; you can redistribute it and/or
+# Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio Query Parser is distributed in the hope that it will be useful,
+# Invenio-Query-Parser is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
@@ -21,7 +21,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Version information for *Invenio Query Parser* package.
+"""Version information for *Invenio-Query-Parser* package.
 
 This file is imported by ``invenio_query_parser.__init__``, and parsed by
 ``setup.py`` as well as ``docs/conf.py``.

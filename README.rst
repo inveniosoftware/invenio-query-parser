@@ -1,4 +1,4 @@
-Invenio Query Parser
+Invenio-Query-Parser
 ====================
 
 .. image:: https://travis-ci.org/inveniosoftware/invenio-query-parser.png?branch=master
@@ -22,7 +22,7 @@ Parser for Invenio and Spires syntax using *pypeg2*.
 Installation
 ============
 
-Invenio Query Parser is on PyPI so all you need is: ::
+Invenio-Query-Parser is on PyPI so all you need is: ::
 
     pip install invenio-query-parser
 
