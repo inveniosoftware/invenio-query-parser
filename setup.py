@@ -27,7 +27,7 @@ import os
 import re
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 
@@ -101,7 +101,8 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v2'
+        ' or later (GPLv2+)',
         'Operating System :: OS Independent',
         'Topic :: Utilities',
     ],
