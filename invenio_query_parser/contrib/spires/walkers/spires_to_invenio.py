@@ -79,6 +79,10 @@ class SpiresToInvenio(object):
     def visit(self, node):
         return type(node)(node.value)
 
+    @visitor(ast.ValueQuery)
+    def visit(self, node, op):
+        return type(node)(op)
+
     @visitor(ast.SingleQuotedValue)
     def visit(self, node):
         return type(node)(node.value)
@@ -88,6 +92,10 @@ class SpiresToInvenio(object):
         return type(node)(node.value)
 
     @visitor(ast.RegexValue)
+    def visit(self, node):
+        return type(node)(node.value)
+
+    @visitor(ast.EmptyQuery)
     def visit(self, node):
         return type(node)(node.value)
 
