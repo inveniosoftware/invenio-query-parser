@@ -36,9 +36,13 @@ class BinaryOp(object):
                              self.right.accept(visitor))
 
     def __eq__(self, other):
-        return (type(self) == type(other)
-                and self.left == other.left
-                and self.right == other.right)
+        return (
+            type(self) == type(other)
+        ) and (
+            self.left == other.left
+        ) and (
+            self.right == other.right
+        )
 
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__,
