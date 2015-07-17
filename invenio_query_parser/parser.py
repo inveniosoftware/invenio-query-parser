@@ -92,7 +92,7 @@ class Or(object):
 
 
 class KeywordRule(LeafRule):
-    grammar = attr('value', re.compile(r"[\w\d]+"))
+    grammar = attr('value', re.compile(r"[\w\d]+(\.[\w\d]+)*"))
 
 
 class SingleQuotedString(LeafRule):

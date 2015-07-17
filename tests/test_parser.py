@@ -438,4 +438,9 @@ class TestParser(object):
          AndOp(SpiresOp(Keyword('a'), Value('rodrigo,g')),
                NotOp(SpiresOp(Keyword('a'), Value('rodrigo,j'))))),
 
+        # Dotable keys
+        ("foo.bar:baz",
+         KeywordOp(Keyword('foo.bar'), Value('baz'))),
+        ("a.b.c.d.f:bar",
+         KeywordOp(Keyword('a.b.c.d.f'), Value('bar'))),
     )
