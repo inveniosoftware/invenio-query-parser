@@ -53,6 +53,9 @@ class PyTest(TestCommand):
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
+        import _pytest.config
+        pm = _pytest.config.get_plugin_manager()
+        pm.consider_setuptools_entrypoints()
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
@@ -68,7 +71,7 @@ tests_require = [
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
     'pytest>=2.6.1',
-    'coverage'
+    'coverage<4.0a1,>=3.7.1'
 ]
 
 setup(
