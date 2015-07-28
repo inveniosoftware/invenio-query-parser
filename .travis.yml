@@ -1,5 +1,5 @@
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -42,3 +42,14 @@ after_success:
 
 notifications:
   email: false
+
+deploy:
+  provider: pypi
+  user: jirikuncar
+  password:
+    secure: QD2ZJ4Oyj4ykvT2uASsLWHUTEHY9cIp0WibRyrTJWFG8uQAPHGFtYNuNTXCP4XOrEFx0OHL6Om+YrsgYT1eR7Aj7GA84TCXcEuPmdQxFdgQuOdvP/jYJyuD1MY5Lf8GdC0m4VdRwm+92d7DCiYSkFwVFzidUtc/eyVdBi3Ay/Iw=
+  distributions: "sdist bdist_wheel"
+  on:
+    python: "2.7"
+    repo: inveniosoftware/invenio-query-parser
+    tags: true
