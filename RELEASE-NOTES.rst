@@ -1,8 +1,8 @@
-=========================================
- Invenio-Query-Parser v0.2.0 is released
-=========================================
+=============================
+ Invenio-Query-Parser v0.3.0
+=============================
 
-Invenio-Query-Parser v0.2.0 was released on December 10, 2014.
+Invenio-Query-Parser v0.3.0 was released on July 29, 2015.
 
 About
 -----
@@ -12,26 +12,24 @@ Search query parser supporting Invenio and SPIRES search syntax.
 What's new
 ----------
 
-- Initial public release.
-- Adds Python2/Python3 compatibility layer.  (#2)
-- Adds new Sphinx documentation page.  (#3)
-- Adds simple inheritance for visitor pattern and separates SPIRES syntax
-  parser to contrib module.  (#7)
+- Allows search keywords to contain dots to point to subfield content,
+  i.e. `author.name: Ellis`.
 
 Installation
 ------------
 
-   $ pip install invenio-query-parser
+   $ pip install invenio-query-parser==0.3.0
 
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.org/en/v0.2.0
+   http://invenio-query-parser.readthedocs.org/en/v0.3.0
 
-Good luck and thanks for using Invenio-Query-Parser.
+Happy hacking and thanks for flying Invenio-Query-Parser.
 
 | Invenio Development Team
 |   Email: info@invenio-software.org
 |   IRC: #invenio on irc.freenode.net
 |   Twitter: http://twitter.com/inveniosoftware
 |   GitHub: https://github.com/inveniosoftware/invenio-query-parser
+|   URL: http://invenio-software.org
