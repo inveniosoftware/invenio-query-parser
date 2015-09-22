@@ -21,8 +21,6 @@
 
 language: python
 
-sudo: false
-
 python:
   - "2.6"
   - "2.7"
@@ -31,7 +29,7 @@ python:
 
 install:
   - pip install --upgrade pip
-  - pip install -e .[docs]
+  - pip install -e .[docs] .[tests]
 
 script:
   - sphinx-build -qnNW docs docs/_build/html

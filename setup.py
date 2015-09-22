@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -53,9 +53,6 @@ class PyTest(TestCommand):
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import pytest
-        import _pytest.config
-        pm = _pytest.config.get_plugin_manager()
-        pm.consider_setuptools_entrypoints()
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
@@ -67,11 +64,11 @@ with open(os.path.join('invenio_query_parser', 'version.py'), 'rt') as f:
     ).group('version')
 
 tests_require = [
+    'pytest>=2.8.0',
     'pytest-cache>=1.0',
-    'pytest-cov>=1.8.0',
+    'pytest-cov>=2.1.0',
     'pytest-pep8>=1.0.6',
-    'pytest>=2.6.1',
-    'coverage<4.0a1,>=3.7.1'
+    'coverage>=4.0.0',
 ]
 
 setup(
@@ -92,6 +89,7 @@ setup(
     ],
     extras_require={
         "docs": ["sphinx_rtd_theme"],
+        "tests": tests_require,
     },
     tests_require=tests_require,
     cmdclass={'test': PyTest},
