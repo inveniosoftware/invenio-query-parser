@@ -319,6 +319,24 @@ class TestParser(object):
         ("find (( t quark )or( a:ellis ))",
          OrOp(SpiresOp(Keyword('t'), Value('quark')),
               SpiresOp(Keyword('a'), Value('ellis')))),
+        ("find collaboration LIGO and a whiting, b f and a Weiss, r",
+         AndOp(
+            AndOp(
+                SpiresOp(Keyword('collaboration'), Value('LIGO')),
+                SpiresOp(Keyword('a'), Value('whiting, b f'))),
+            SpiresOp(Keyword('a'), Value('Weiss, r')))),
+        ("find (collaboration LIGO and a whiting, b f) and a Weiss, r",
+         AndOp(
+            AndOp(
+                SpiresOp(Keyword('collaboration'), Value('LIGO')),
+                SpiresOp(Keyword('a'), Value('whiting, b f'))),
+            SpiresOp(Keyword('a'), Value('Weiss, r')))),
+        ("find collaboration LIGO and (a whiting, b f and a Weiss, r)",
+         AndOp(
+            SpiresOp(Keyword('collaboration'), Value('LIGO')),
+            AndOp(
+                SpiresOp(Keyword('a'), Value('whiting, b f')),
+                SpiresOp(Keyword('a'), Value('Weiss, r'))))),
 
         # Implicit keyword
         ("find a john and ellis",
