@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -25,15 +25,27 @@
 
 from __future__ import unicode_literals
 
-from pytest import generate_tests
-
 from invenio_query_parser.ast import (
-    AndOp, KeywordOp, OrOp, NotOp, Keyword, Value, SingleQuotedValue,
-    DoubleQuotedValue, ValueQuery, RegexValue, RangeOp, EmptyQuery,
-    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp
-)
+    AndOp,
+    DoubleQuotedValue,
+    EmptyQuery,
+    GreaterEqualOp,
+    GreaterOp,
+    Keyword,
+    KeywordOp,
+    LowerEqualOp,
+    LowerOp,
+    NotOp,
+    OrOp,
+    RangeOp,
+    RegexValue,
+    SingleQuotedValue,
+    Value,
+    ValueQuery)
 
 from invenio_query_parser.contrib.spires.ast import SpiresOp
+
+from pytest import generate_tests
 
 
 def generate_parser_test(query, expected):
@@ -319,6 +331,24 @@ class TestParser(object):
         ("find (( t quark )or( a:ellis ))",
          OrOp(SpiresOp(Keyword('t'), Value('quark')),
               SpiresOp(Keyword('a'), Value('ellis')))),
+        ("find collaboration LIGO and a whiting, b f and a Weiss, r",
+         AndOp(
+             AndOp(
+                 SpiresOp(Keyword('collaboration'), Value('LIGO')),
+                 SpiresOp(Keyword('a'), Value('whiting, b f'))),
+             SpiresOp(Keyword('a'), Value('Weiss, r')))),
+        ("find (collaboration LIGO and a whiting, b f) and a Weiss, r",
+         AndOp(
+             AndOp(
+                 SpiresOp(Keyword('collaboration'), Value('LIGO')),
+                 SpiresOp(Keyword('a'), Value('whiting, b f'))),
+             SpiresOp(Keyword('a'), Value('Weiss, r')))),
+        ("find collaboration LIGO and (a whiting, b f and a Weiss, r)",
+         AndOp(
+             SpiresOp(Keyword('collaboration'), Value('LIGO')),
+             AndOp(
+                 SpiresOp(Keyword('a'), Value('whiting, b f')),
+                 SpiresOp(Keyword('a'), Value('Weiss, r'))))),
 
         # Implicit keyword
         ("find a john and ellis",
@@ -367,7 +397,7 @@ class TestParser(object):
         ("fin af oxford u. and refersto title muon*",
          AndOp(SpiresOp(Keyword('af'), Value("oxford u.")),
                SpiresOp(Keyword('refersto'),
-               SpiresOp(Keyword('title'), Value('muon*'))))),
+                        SpiresOp(Keyword('title'), Value('muon*'))))),
         ("find refersto a parke or refersto a lykken and a witten",
          AndOp(OrOp(SpiresOp(Keyword('refersto'),
                              SpiresOp(Keyword('a'), Value("parke"))),
@@ -393,10 +423,14 @@ class TestParser(object):
         # Greater, Lower Ops
         ("find date > 1984",
          SpiresOp(Keyword('date'), GreaterOp(Value('1984')))),
+        ("find ac > 5",
+         SpiresOp(Keyword('ac'), GreaterOp(Value('5')))),
         ("find date after 1984",
          SpiresOp(Keyword('date'), GreaterOp(Value('1984')))),
         ("find date < 1984",
          SpiresOp(Keyword('date'), LowerOp(Value('1984')))),
+        ("find ac < 5",
+         SpiresOp(Keyword('ac'), LowerOp(Value('5')))),
         ("find date before 1984",
          SpiresOp(Keyword('date'), LowerOp(Value('1984')))),
         ("find date >= 1984",
@@ -411,6 +445,12 @@ class TestParser(object):
          SpiresOp(Keyword('topcite'), GreaterEqualOp(Value('200')))),
         ("find topcite 200-",
          SpiresOp(Keyword('topcite'), LowerEqualOp(Value('200')))),
+
+        # Journal searches with whitespaces
+        ("find j Phys.Rev.,D41,2330",
+         SpiresOp(Keyword('j'), Value('Phys.Rev.,D41,2330'))),
+        ("find j Phys.Rev.,D41, 2330",
+         SpiresOp(Keyword('j'), Value('Phys.Rev.,D41, 2330'))),
 
         # Popular queries
         ("arXiv:1004.0648",
