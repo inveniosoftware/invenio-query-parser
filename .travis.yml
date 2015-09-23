@@ -32,10 +32,11 @@ python:
 
 install:
   - pip install --upgrade pip
-  - pip install coveralls
+  - pip install check-manifest coveralls
   - pip install -e .[docs]
 
 script:
+  - check-manifest
   - sphinx-build -qnNW docs docs/_build/html
   - python setup.py test
 
