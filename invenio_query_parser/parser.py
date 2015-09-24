@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -25,11 +25,10 @@
 
 from __future__ import absolute_import
 
-import pypeg2
 import re
 
-from pypeg2 import (Keyword, maybe_some, optional, attr,
-                    Literal, omit, some)
+import pypeg2
+from pypeg2 import Keyword, Literal, attr, maybe_some, omit, optional, some
 
 from . import ast
 from ._compat import string_types
@@ -235,6 +234,7 @@ class AndQuery(UnaryRule):
         (
             omit(And),
             [
+                (omit(Whitespace), attr('op', NotQuery)),
                 (omit(Whitespace), attr('op', SimpleQuery)),
                 (omit(_), attr('op', ParenthesizedQuery)),
             ],
@@ -248,6 +248,7 @@ class AndQuery(UnaryRule):
 
 class ImplicitAndQuery(UnaryRule):
     grammar = [
+        attr('op', NotQuery),
         attr('op', ParenthesizedQuery),
         attr('op', SimpleQuery),
     ]
@@ -258,6 +259,7 @@ class OrQuery(UnaryRule):
         (
             omit(Or),
             [
+                (omit(Whitespace), attr('op', NotQuery)),
                 (omit(Whitespace), attr('op', SimpleQuery)),
                 (omit(_), attr('op', ParenthesizedQuery)),
             ],
@@ -271,13 +273,13 @@ class OrQuery(UnaryRule):
 
 Query.grammar = attr('children', (
     [
+        NotQuery,
         ParenthesizedQuery,
         SimpleQuery,
     ],
     maybe_some((
         omit(_),
         [
-            NotQuery,
             AndQuery,
             OrQuery,
             ImplicitAndQuery,

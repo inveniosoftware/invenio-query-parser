@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2015 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -110,7 +110,7 @@ class PypegConverter(object):
 
     @visitor(parser.NotQuery)
     def visit(self, node, child):
-        return ast.AndOp(None, ast.NotOp(child))
+        return ast.NotOp(child)
 
     @visitor(parser.AndQuery)
     def visit(self, node, child):

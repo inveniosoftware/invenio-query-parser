@@ -250,6 +250,35 @@ class TestParser(object):
                            ValueQuery(Value('bbb'))),
                      NotOp(ValueQuery(Value('ccc')))),
                ValueQuery(Value('ddd')))),
+        ("foo:bar not foo:bar",
+            AndOp(
+                KeywordOp(Keyword('foo'), Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+        ("foo:bar and -foo:bar",
+            AndOp(
+                KeywordOp(Keyword('foo'), Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+        ("-foo:bar",
+            NotOp(KeywordOp(Keyword('foo'), Value('bar')))),
+        ("-foo",
+            NotOp(ValueQuery(Value('foo')))),
+        ("foo:bar or -foo:bar",
+            OrOp(
+                KeywordOp(Keyword('foo'), Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+        ("foo:bar or not foo:bar",
+            OrOp(
+                KeywordOp(Keyword('foo'), Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+        ("bar + (not foo:\"Ba, r\")",
+            AndOp(
+                ValueQuery(Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), DoubleQuotedValue('Ba, r'))))),
+        ("bar | -foo:bar",
+            OrOp(
+                ValueQuery(Value('bar')),
+                NotOp(KeywordOp(Keyword('foo'), Value('bar'))))),
+
 
         # Nested searches
         ("refersto:author:Ellis",
