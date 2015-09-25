@@ -68,6 +68,10 @@ class PypegConverter(object):
     def visit(self, node):
         return ast.Value(node.value)
 
+    @visitor(parser.Particle)
+    def visit(self, node):
+        return ast.Particle(node.value)
+
     @visitor(parser.SimpleRangeValue)
     def visit(self, node):
         return ast.Value(node.value)

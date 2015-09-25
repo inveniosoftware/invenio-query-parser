@@ -25,6 +25,8 @@
 
 from __future__ import absolute_import
 
+from .config import PARTICLES
+
 import re
 
 import pypeg2
@@ -90,23 +92,43 @@ class Or(object):
     ])
 
 
+class Particle(LeafRule):
+    particles_list = PARTICLES.keys()
+    particles_list = [re.escape(particle) for particle in particles_list]
+    particles_list.sort(key=len, reverse=True)
+    # creates a RegEx identifying all particles
+    regex = "|".join(particles_list)
+    grammar = attr('value', re.compile(r"^(%s)+$" % regex, re.I))
+
 class KeywordRule(LeafRule):
     grammar = attr('value', re.compile(r"[\w\d]+(\.[\w\d]+)*"))
 
 
 class SingleQuotedString(LeafRule):
-    grammar = Literal("'"), attr('value', re.compile(r"([^']|\\.)*")), \
-        Literal("'")
+    grammar = [
+        (Literal("'"), attr('value', Particle),
+         Literal("'")),
+        (Literal("'"), attr('value', re.compile(r"([^']|\\.)*")),
+         Literal("'")),
+    ]
 
 
 class DoubleQuotedString(LeafRule):
-    grammar = Literal('"'), attr('value', re.compile(r'([^"]|\\.)*')), \
-        Literal('"')
+    grammar = [
+        (Literal('"'), attr('value', Particle),
+         Literal('"')),
+        (Literal('"'), attr('value', re.compile(r'([^"]|\\.)*')),
+         Literal('"')),
+    ]
 
 
 class SlashQuotedString(LeafRule):
-    grammar = Literal('/'), attr('value', re.compile(r"([^/]|\\.)*")), \
-        Literal('/')
+    grammar = [
+        (Literal('/'), attr('value', Particle),
+         Literal('/')),
+        (Literal('/'), attr('value', re.compile(r"([^/]|\\.)*")),
+         Literal('/')),
+    ]
 
 
 class SimpleValue(LeafRule):
@@ -155,6 +177,7 @@ class Value(UnaryRule):
         SingleQuotedString,
         DoubleQuotedString,
         SlashQuotedString,
+        Particle,
         SimpleValue,
     ])
 

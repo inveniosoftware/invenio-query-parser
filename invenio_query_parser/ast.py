@@ -163,6 +163,8 @@ class Keyword(Leaf):
 class Value(Leaf):
     pass
 
+class Particle(Leaf):
+    pass
 
 class SingleQuotedValue(Leaf):
     pass

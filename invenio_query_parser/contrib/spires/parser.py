@@ -26,13 +26,20 @@
 from invenio_query_parser.parser import _
 from invenio_query_parser.parser import *
 
-from .config import SPIRES_KEYWORDS
+from .config import PARTICLES, SPIRES_KEYWORDS
 
 
 class SpiresKeywordRule(LeafRule):
     grammar = attr('value', re.compile(r"(%s)\b" % "|".join(
         SPIRES_KEYWORDS.keys()), re.I))
 
+class Particle(LeafRule):
+    particles_list = PARTICLES.keys()
+    particles_list = [re.escape(particle) for particle in particles_list]
+    particles_list.sort(key=len, reverse=True)
+    # creates a RegEx identifying all particles
+    regex = "|".join(particles_list)
+    grammar = attr('value', re.compile(r"^(%s)+$" % regex, re.I))
 
 class SpiresSimpleValue(LeafRule):
 
@@ -235,6 +242,7 @@ SpiresKeywordQuery.grammar = [
             GreaterQuery,
             LowerEqualQuery,
             LowerQuery,
+            Particle,
             SpiresValue
         ])
     ),

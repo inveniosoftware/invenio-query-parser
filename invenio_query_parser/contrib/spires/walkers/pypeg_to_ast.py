@@ -64,6 +64,10 @@ class PypegConverter(pypeg_to_ast.PypegConverter):
     def visit(self, node):
         return ast.Value(node.value)
 
+    @visitor(parser.Particle)
+    def visit(self, node):
+        return ast.Particle(node.value)
+
     @visitor(parser.SpiresValue)
     def visit(self, node, children):
         return ast.Value("".join([c.value for c in children]))
