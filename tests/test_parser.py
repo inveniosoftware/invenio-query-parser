@@ -378,6 +378,34 @@ class TestParser(object):
              AndOp(
                  SpiresOp(Keyword('a'), Value('whiting, b f')),
                  SpiresOp(Keyword('a'), Value('Weiss, r'))))),
+        ("find (aff IMPERIAL and d <1989 and a ELLISON) or"
+         "(a ELLISON and aff RIVERSIDE and tc P)",
+         OrOp(
+             AndOp(
+                 AndOp(
+                     SpiresOp(Keyword('aff'), Value('IMPERIAL')),
+                     SpiresOp(Keyword('d'), LowerOp(Value('1989')))),
+                 SpiresOp(Keyword('a'), Value('ELLISON'))),
+             AndOp(
+                 AndOp(
+                     SpiresOp(Keyword('a'), Value('ELLISON')),
+                     SpiresOp(Keyword('aff'), Value('RIVERSIDE'))),
+                 SpiresOp(Keyword('tc'), Value('P'))))
+         ),
+        ("find (a ELLISON and aff RIVERSIDE and tc P) or"
+         "(aff IMPERIAL and d <1989 and a ELLISON)",
+         OrOp(
+             AndOp(
+                 AndOp(
+                     SpiresOp(Keyword('a'), Value('ELLISON')),
+                     SpiresOp(Keyword('aff'), Value('RIVERSIDE'))),
+                 SpiresOp(Keyword('tc'), Value('P'))),
+             AndOp(
+                 AndOp(
+                     SpiresOp(Keyword('aff'), Value('IMPERIAL')),
+                     SpiresOp(Keyword('d'), LowerOp(Value('1989')))),
+                 SpiresOp(Keyword('a'), Value('ELLISON'))))
+         ),
 
         # Implicit keyword
         ("find a john and ellis",
