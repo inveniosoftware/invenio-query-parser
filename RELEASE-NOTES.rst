@@ -1,29 +1,45 @@
 =============================
- Invenio-Query-Parser v0.3.0
+ Invenio-Query-Parser v0.4.0
 =============================
 
-Invenio-Query-Parser v0.3.0 was released on July 29, 2015.
+Invenio-Query-Parser v0.4.0 was released on November 12, 2015.
 
 About
 -----
 
 Search query parser supporting Invenio and SPIRES search syntax.
 
-What's new
-----------
+Incompatible changes
+--------------------
 
-- Allows search keywords to contain dots to point to subfield content,
-  i.e. `author.name: Ellis`.
+- Removes support for Python 2.6.
+
+New features
+------------
+
+- Adds **experimental** support for Elasticsearch query generation.
+- Adds `MatchUnit` walker for testing data against a query.
+
+Improved features
+-----------------
+
+- Adds Python 3.5 classifier and enables it in test matrix.
+
+Bug fixes
+---------
+
+- Fixes 'not' operator usage at the beginning of the query and after
+  an 'or' operator.
 
 Installation
 ------------
 
-   $ pip install invenio-query-parser==0.3.0
+   $ pip install invenio-query-parser==0.4.0
 
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.org/en/v0.3.0
+   http://invenio-query-parser.readthedocs.org/en/v0.4.0
 
 Happy hacking and thanks for flying Invenio-Query-Parser.
 
