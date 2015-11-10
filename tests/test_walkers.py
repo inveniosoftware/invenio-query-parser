@@ -23,11 +23,14 @@
 
 """Unit tests for the search engine query parsers."""
 
+import pypeg2
 from pytest import generate_tests
 
-from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
+from invenio_query_parser.ast import GreaterOp, Keyword, KeywordOp, Value
 from invenio_query_parser.contrib.spires import converter
-from invenio_query_parser.ast import KeywordOp, Keyword, Value, GreaterOp
+from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
+from invenio_query_parser.parser import Main
+from invenio_query_parser.walkers import match_unit
 
 
 def generate_walker_test(query, expected):
@@ -40,8 +43,7 @@ def generate_walker_test(query, expected):
 
 @generate_tests(generate_walker_test)  # pylint: disable=R0903
 class TestSpiresToInvenio(object):
-
-    """Test parser functionality."""
+    """Test SPIRES parser functionality."""
 
     @classmethod
     def setup_class(cls):
@@ -53,4 +55,68 @@ class TestSpiresToInvenio(object):
          KeywordOp(Keyword('title'), Value('quark'))),
         ("find d after yesterday",
          KeywordOp(Keyword('year'), GreaterOp(Value('yesterday')))),
+    )
+
+
+def generate_match_unit_test(query, data, expected):
+    def func(self):
+        tree = pypeg2.parse(query, self.parser, whitespace="")
+        from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
+        tree = tree.accept(PypegConverter())
+        new_tree = tree.accept(self.walker(data))
+        assert new_tree == expected
+    return func
+
+
+@generate_tests(generate_match_unit_test)  # pylint: disable=R0903
+class TestMatchUnit(object):
+    """Test MatchUnit functionality."""
+
+    @classmethod
+    def setup_class(cls):
+        cls.walker = match_unit.MatchUnit
+        cls.parser = Main
+
+    queries = (
+        ('', None, True),
+
+        # Value query
+        ('test', {'data': 'test'}, True),
+        ('/^test.*$/', {'data': 'test'}, True),
+        ('/^test.*$/', {'data': 'testing'}, True),
+        ('/^test.*$/', {'data': 'notest'}, False),
+        ('test', {'data': ['bar', 'test']}, True),
+        ('test', {'data': ['bar', 'baz']}, False),
+        ('test', {'data': [{'name': 'bar'}, {'name': 'test'}]}, True),
+
+        # Keyword query
+        ('title:"Test"', {'title': 'Test'}, True),
+        ('title:"Test"', {'title': 'NoTest'}, False),
+        ('title:Test', {'title': 'My Testing'}, True),
+
+        # Test list matching
+        ('author:Ellis',
+         {'author': [{'name': 'Higgs'}, {'name': 'Ellis'}]},
+         True),
+
+        # Range queries
+        ('data:b->h', {'data': 'a'}, False),
+        ('data:b->h', {'data': 'b'}, True),
+        ('data:b->h', {'data': 'boo'}, True),
+        ('data:b->h', {'data': 'f'}, True),
+        ('data:b->h', {'data': 'foo'}, True),
+        ('data:b->h', {'data': 'h'}, True),
+        ('data:b->h', {'data': 'z'}, False),
+
+        # Boolean operations
+        ('title:"Test" AND data:\'foo bar\'',
+         {'title': 'Test', 'data': 'foo bar'},
+         True),
+        ('title:"Test" AND NOT data:\'foo bar\'',
+         {'title': 'Test', 'data': 'foo bar'},
+         False),
+        ('title:"Test" OR data:\'foo bar\'',
+         {'title': 'Test', 'data': 'foo bar'},
+         True),
+
     )

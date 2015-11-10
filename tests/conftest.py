@@ -26,10 +26,10 @@ import pytest
 
 def generate_tests(generate_test):
     def fun(cls):
-        for count, (query, expected) in enumerate(cls.queries):
-            func = generate_test(query, expected)
+        for count, args in enumerate(cls.queries):
+            func = generate_test(*args)
             func.__name__ = 'test_%s' % count
-            func.__doc__ = "Parsing query %s" % query
+            func.__doc__ = "Parsing query %s" % args[0]
             setattr(cls, func.__name__, func)
         return cls
     return fun
