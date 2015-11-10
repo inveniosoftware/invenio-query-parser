@@ -27,10 +27,12 @@ import pypeg2
 from pytest import generate_tests
 
 from invenio_query_parser.ast import GreaterOp, Keyword, KeywordOp, Value
+from invenio_query_parser.contrib.elasticsearch.walkers import dsl
 from invenio_query_parser.contrib.spires import converter
 from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
 from invenio_query_parser.parser import Main
 from invenio_query_parser.walkers import match_unit
+from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
 
 
 def generate_walker_test(query, expected):
@@ -58,10 +60,60 @@ class TestSpiresToInvenio(object):
     )
 
 
+def generate_dsl_test(query, data, expected):
+    def func(self):
+        tree = pypeg2.parse(query, self.parser, whitespace="")
+        tree = tree.accept(PypegConverter())
+        new_tree = tree.accept(self.walker(**data or {}))
+        assert new_tree == expected
+    return func
+
+
+@generate_tests(generate_dsl_test)  # pylint: disable=R0903
+class TestElasticsearchDSL(object):
+    """Test Elasticsearch DSL converter."""
+
+    @classmethod
+    def setup_class(cls):
+        cls.walker = dsl.ElasticSearchDSL
+        cls.parser = Main
+
+    keyword_to_fields = {None: ['_all'], 'foo': ['test1', 'test2']}
+
+    queries = (
+        # Empty query
+        ('', None, {'match_all': {}}),
+        # Value queries
+        ('bar', None, {'multi_match': {
+            'fields': ['_all'], 'query': 'bar'
+        }}),
+        ('\'foo bar\'', None, {'multi_match': {
+            'fields': ['_all'],
+            'query': 'foo bar',
+            'type': 'phrase'
+        }}),
+        ('"foo bar"', None, {'term': {'_all': 'foo bar'}}),
+        # Key-value queries
+        ('foo:bar', dict(keyword_to_fields=keyword_to_fields),
+         {'multi_match': {'fields': ['test1', 'test2'], 'query': 'bar'}}),
+        ('foo:\'bar baz\'', dict(keyword_to_fields=keyword_to_fields), {
+            'multi_match': {
+                'fields': ['test1', 'test2'], 'query': 'bar baz',
+                'type': 'phrase',
+            }
+        }),
+        ('foo:"bar baz"', dict(keyword_to_fields=keyword_to_fields), {
+            'bool': {'should': [
+                {'term': {'test1': 'bar baz'}},
+                {'term': {'test2': 'bar baz'}},
+            ]}
+        })
+    )
+
+
 def generate_match_unit_test(query, data, expected):
     def func(self):
         tree = pypeg2.parse(query, self.parser, whitespace="")
-        from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
         tree = tree.accept(PypegConverter())
         new_tree = tree.accept(self.walker(data))
         assert new_tree == expected
