@@ -44,7 +44,7 @@ class ElasticSearchDSL(object):
         """Convert keyword to fields."""
         field = self.keyword_to_fields.get(keyword, keyword)
         if isinstance(field, dict):
-            field = field[mode]
+            return field[mode]
         elif isinstance(field, (list, tuple)):
             return field
         return [field]
@@ -134,8 +134,7 @@ class ElasticSearchDSL(object):
             "match_all": {}
         }
 
-    @staticmethod
-    def _range_operators(node, condition):
+    def _range_operators(self, node, condition):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='r')
             if len(fields) > 1:
@@ -143,7 +142,7 @@ class ElasticSearchDSL(object):
                     {'range': {k: condition}} for k in fields
                 ]}}
             else:
-                res = {'range': {keyword[0]: condition}}
+                res = {'range': {fields[0]: condition}}
             return res
         return query
 

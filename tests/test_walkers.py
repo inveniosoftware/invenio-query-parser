@@ -24,6 +24,8 @@
 """Unit tests for the search engine query parsers."""
 
 import pypeg2
+
+import pytest
 from pytest import generate_tests
 
 from invenio_query_parser.ast import GreaterOp, Keyword, KeywordOp, Value
@@ -64,8 +66,12 @@ def generate_dsl_test(query, data, expected):
     def func(self):
         tree = pypeg2.parse(query, self.parser, whitespace="")
         tree = tree.accept(PypegConverter())
-        new_tree = tree.accept(self.walker(**data or {}))
-        assert new_tree == expected
+        if type(expected) is type(BaseException):
+            with pytest.raises(expected):
+                new_tree = tree.accept(self.walker(**data or {}))
+        else:
+            new_tree = tree.accept(self.walker(**data or {}))
+            assert new_tree == expected
     return func
 
 
@@ -80,9 +86,158 @@ class TestElasticsearchDSL(object):
 
     keyword_to_fields = {None: ['_all'], 'foo': ['test1', 'test2']}
 
+    test_empty_query = (
+        '',
+        None,
+        {'match_all': {}}
+    )
+
+    # Combined queries - boolean operators
+    test_and_query = (
+        'boo:bar baz',
+        None,
+        {"bool": {"must": [{"multi_match": {"fields": ["boo"], "query": "bar",
+                                            }}, {"multi_match": {
+                                                 "fields": ["_all"],
+                                                 "query": "baz", }}]}}
+    )
+
+    test_or_query = (
+        'boo:bar or baz',
+        None,
+        {"bool": {"should": [{"multi_match": {"fields": ["boo"],
+                                              "query": "bar", }},
+                             {"multi_match": {"fields": ["_all"],
+                              "query": "baz", }}]}},
+    )
+
+    test_not_query = (
+        'boo:bar and not boo:bar',
+        None,
+        {"bool": {"must":
+                  [{"multi_match":
+                    {"fields": ["boo"], "query": "bar"}},
+                   {"bool": {"must_not":
+                             [{"multi_match": {"fields": ["boo"],
+                              "query": "bar"}}]}}]}}
+    )
+
+    left = {"multi_match": {"fields": ["_all"], "query": "ddd"}}
+    right_right = {"bool": {"must": [{"multi_match": {"fields": ["_all"],
+                            "query": "aaa"}},
+                                     {"multi_match": {"fields": ["_all"],
+                                      "query": "bbb"}}]}}
+    right_left = {"bool": {"must_not": [{"multi_match": {"fields": ["_all"],
+                  "query": "ccc"}}]}}
+    right = {"bool": {"must": [right_right, right_left]}}
+
+    test_combined_bool_query = (
+        '((aaa and bbb) and not ccc) or ddd',
+        None,
+        {"bool": {"should": [right, left]}}
+    )
+
+    # Operators
+    test_greater_op = (
+        'date:1984<',
+        None,
+        {"range": {"date": {"gt": "1984"}}}
+    )
+
+    test_lower_op = (
+        'year:1984>',
+        None,
+        {"range": {"year": {"lt": "1984"}}}
+    )
+
+    test_gte_op = (
+        'year:1984<=',
+        None,
+        {"range": {"year": {"gte": "1984"}}}
+    )
+
+    test_lte_op = (
+        'year:1984>=',
+        None,
+        {"range": {"year": {"lte": "1984"}}}
+    )
+    test_range_op = (
+        'year:2000->2012',
+        None,
+        {"range": {"year": {"gte": "2000", "lte": "2012"}}}
+    )
+
+    test_multiple_range_op = (
+        'foo:bar->baz',
+        dict(keyword_to_fields=keyword_to_fields),
+        {"bool": {
+            "should": [
+                {
+                    "range": {
+                        "test1": {
+                            "gte": "bar",
+                            "lte": "baz"
+                        }
+                    }
+                },
+                {
+                    "range": {
+                        "test2": {
+                            "gte": "bar",
+                            "lte": "baz"
+                        }
+                    }
+                }
+            ]
+        }}
+    )
+
+    test_keyword_with_regex = (
+        'title: /bar/',
+        None,
+        {"regexp": {"title": "bar"}}
+    )
+
+    test_keywords_with_regex = (
+        'foo: /bar/',
+        dict(keyword_to_fields=keyword_to_fields),
+        {
+            "bool": {
+                "should": [
+                    {
+                        "regexp": {
+                            "test1": "bar"
+                        }
+                    },
+                    {
+                        "regexp": {
+                            "test2": "bar"
+                        }
+                    }
+                ]
+            }
+        })
+
+    test_second_order_operator = (
+        'first:second:bar',
+        None,
+        RuntimeError
+    )
+
+    test_regex_for_all_should_fail = (
+        '/bar/',
+        None,
+        RuntimeError
+    )
+
+    test_keywords_to_fields = (
+        'foo: bar',
+        dict(keyword_to_fields={'foo': {'a': ['test1', 'test2']}}),
+        {'multi_match': {'fields': ['test1', 'test2'], 'query': 'bar'}}
+    )
+
     queries = (
-        # Empty query
-        ('', None, {'match_all': {}}),
+        test_empty_query,
         # Value queries
         ('bar', None, {'multi_match': {
             'fields': ['_all'], 'query': 'bar'
@@ -107,7 +262,22 @@ class TestElasticsearchDSL(object):
                 {'term': {'test1': 'bar baz'}},
                 {'term': {'test2': 'bar baz'}},
             ]}
-        })
+        }),
+        test_and_query,
+        test_or_query,
+        test_not_query,
+        test_combined_bool_query,
+        # test_greater_op, Issue inveniosoftware/invenio-query-parser#43
+        # test_lower_op,
+        # test_gte_op,
+        # test_lte_op,
+        test_range_op,
+        test_multiple_range_op,
+        test_keyword_with_regex,
+        test_keywords_with_regex,
+        test_second_order_operator,
+        test_regex_for_all_should_fail,
+        test_keywords_to_fields
     )
 
 
