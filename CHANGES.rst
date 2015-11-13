@@ -1,6 +1,12 @@
 Changes
 =======
 
+Version 0.4.1 (released 2015-11-13):
+------------------------------------
+
+- Default key getter returns default value instead of raising key
+  error if the key is not found inside the dictionary.
+
 Version 0.4.0 (released 2015-11-12):
 ------------------------------------
 
