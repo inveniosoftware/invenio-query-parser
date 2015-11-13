@@ -315,6 +315,7 @@ class TestMatchUnit(object):
         ('title:"Test"', {'title': 'Test'}, True),
         ('title:"Test"', {'title': 'NoTest'}, False),
         ('title:Test', {'title': 'My Testing'}, True),
+        ('non_existing:Test', {'title': 'My Testing'}, False),
 
         # Test list matching
         ('author:Ellis',

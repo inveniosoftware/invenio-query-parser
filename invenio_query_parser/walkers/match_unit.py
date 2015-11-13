@@ -42,7 +42,7 @@ def dottable_getitem(data, dottable_key, default=None):
         elif len(keys) == 1:
             key = keys[0]
             if isinstance(value, MutableMapping):
-                return value[key]
+                return value.get(key, default)
             elif isinstance(value, MutableSequence):
                 return [getitem(v, key) for v in value]
             return default
