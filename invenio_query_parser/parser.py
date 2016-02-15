@@ -94,6 +94,11 @@ class KeywordRule(LeafRule):
     grammar = attr('value', re.compile(r"[\w\d]+(\.[\w\d]+)*"))
 
 
+class NestedKeywordsRule(LeafRule):
+    grammar = attr('value', re.compile(
+        r"(([\w\d]+(\.[\w\d]+)*):\s*)+([\w\d]+(\.[\w\d]+)*)"))
+
+
 class SingleQuotedString(LeafRule):
     grammar = Literal("'"), attr('value', re.compile(r"([^']|\\.)*")), \
         Literal("'")
@@ -178,16 +183,24 @@ class Query(ListRule):
     pass
 
 
+class NotKeywordValue(LeafRule):
+    pass
+
+
 class KeywordQuery(BinaryRule):
     pass
 
 
+class EmptyQueryRule(LeafRule):
+    grammar = attr('value', re.compile(r'\s*'))
+
+
 KeywordQuery.grammar = [
-    # (
-    #     attr('left', KeywordRule),
-    #     omit(_, Literal(':'), _),
-    #     attr('right', KeywordQuery)
-    # ),
+    (
+        attr('left', KeywordRule),
+        omit(_, Literal(':'), _),
+        attr('right', NestedKeywordsRule)
+    ),
     (
         attr('left', KeywordRule),
         omit(Literal(':'), _),
@@ -286,10 +299,6 @@ Query.grammar = attr('children', (
         ]
     )),
 ))
-
-
-class EmptyQueryRule(LeafRule):
-    grammar = attr('value', re.compile(r'\s*'))
 
 
 class Main(UnaryRule):

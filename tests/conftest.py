@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -22,6 +22,10 @@
 # or submit itself to any jurisdiction.
 
 import pytest
+import shutil
+import tempfile
+
+from flask import Flask
 
 
 def generate_tests(generate_test):
@@ -39,3 +43,21 @@ def pytest_namespace():
     return dict((
         ("generate_tests", generate_tests),
     ))
+
+
+@pytest.fixture()
+def app(request):
+    """Flask application fixture."""
+    instance_path = tempfile.mkdtemp()
+    app = Flask(__name__, instance_path=instance_path)
+    app.config.update(
+        SEARCH_ALLOWED_KEYWORDS=set([
+            'title', 'author']),
+        TESTING=True,
+    )
+
+    def teardown():
+        shutil.rmtree(instance_path)
+    request.addfinalizer(teardown)
+
+    return app

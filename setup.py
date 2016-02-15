@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -64,6 +64,7 @@ with open(os.path.join('invenio_query_parser', 'version.py'), 'rt') as f:
     ).group('version')
 
 tests_require = [
+    'Flask>=0.10',
     'coverage>=4.0.0',
     'py>=1.4.30',
     'pytest-cov>=2.1.0',

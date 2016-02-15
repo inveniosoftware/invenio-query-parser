@@ -35,6 +35,7 @@ from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
 from invenio_query_parser.parser import Main
 from invenio_query_parser.walkers import match_unit
 from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
+from invenio_query_parser.utils import build_valid_keywords_grammar
 
 
 def generate_walker_test(query, expected):
@@ -53,6 +54,7 @@ class TestSpiresToInvenio(object):
     def setup_class(cls):
         cls.walker = spires_to_invenio.SpiresToInvenio
         cls.parser = converter.SpiresToInvenioSyntaxConverter()
+        build_valid_keywords_grammar()
 
     queries = (
         ("find t quark",
@@ -83,6 +85,7 @@ class TestElasticsearchDSL(object):
     def setup_class(cls):
         cls.walker = dsl.ElasticSearchDSL
         cls.parser = Main
+        build_valid_keywords_grammar()
 
     keyword_to_fields = {None: ['_all'], 'foo': ['test1', 'test2']}
 
@@ -291,6 +294,7 @@ class TestMatchUnit(object):
     def setup_class(cls):
         cls.walker = match_unit.MatchUnit
         cls.parser = Main
+        build_valid_keywords_grammar()
 
     queries = (
         ('', None, True),
