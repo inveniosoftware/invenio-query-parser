@@ -244,7 +244,11 @@ class TestElasticsearchDSL(object):
             'query': 'foo bar',
             'type': 'phrase'
         }}),
-        ('"foo bar"', None, {'term': {'_all': 'foo bar'}}),
+        ('"foo bar"', None, {
+            'multi_match': {
+                'fields': ['_all'], 'query': 'foo bar', 'type': 'phrase',
+            }
+        }),
         # Key-value queries
         ('foo:bar', dict(keyword_to_fields=keyword_to_fields),
          {'multi_match': {'fields': ['test1', 'test2'], 'query': 'bar'}}),
@@ -255,10 +259,10 @@ class TestElasticsearchDSL(object):
             }
         }),
         ('foo:"bar baz"', dict(keyword_to_fields=keyword_to_fields), {
-            'bool': {'should': [
-                {'term': {'test1': 'bar baz'}},
-                {'term': {'test2': 'bar baz'}},
-            ]}
+            'multi_match': {
+                'fields': ['test1', 'test2'], 'query': 'bar baz',
+                'type': 'phrase',
+            }
         }),
         test_and_query,
         test_or_query,

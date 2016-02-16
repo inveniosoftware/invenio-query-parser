@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -105,12 +105,14 @@ class ElasticSearchDSL(object):
     @visitor(DoubleQuotedValue)
     def visit(self, node):
         def query(keyword):
-            fields = self.get_fields_for_keyword(keyword, mode='e')
-            if len(fields) > 1:
-                return {"bool": {"should": [
-                    {"term": {field: str(node.value)}} for field in fields
-                ]}}
-            return {'term': {field: node.value for field in fields}}
+            fields = self.get_fields_for_keyword(keyword, mode='p')
+            return {
+                'multi_match': {
+                    'query': node.value,
+                    'type': 'phrase',
+                    'fields': fields,
+                }
+            }
         return query
 
     @visitor(RegexValue)
