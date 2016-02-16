@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+#
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014, 2016 CERN.
+# Copyright (C) 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,11 +21,35 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-include *.py *.sh
-include *.rst
-include .coveragerc .travis.yml pytest.ini
-include .editorconfig
-include docs/*.rst docs/*.py docs/Makefile
-include LICENSE
-include tests/*.ini tests/*.py
-include tox.ini
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+# Python files
+[*.py]
+indent_size = 4
+# isort plugin configuration
+known_first_party = invenio_query_parser
+multi_line_output = 2
+default_section = THIRDPARTY
+
+# RST files (used by sphinx)
+[*.rst]
+indent_size = 4
+
+# CSS, HTML, JS, JSON, YML
+[*.{css,html,js,json,yml}]
+indent_size = 2
+
+# Matches the exact files either package.json or .travis.yml
+[{package.json,.travis.yml}]
+indent_size = 2
+
+# Dockerfile
+[Dockerfile]
+indent_size = 4

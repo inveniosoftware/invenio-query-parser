@@ -1,6 +1,6 @@
 ..
     This file is part of Invenio-Query-Parser
-    Copyright (C) 2014 CERN.
+    Copyright (C) 2014, 2016 CERN.
 
     Invenio-Query-Parser is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -33,3 +33,5 @@ Contact us at `info@invenio-software.org
 - Federico Poli <https://github.com/fpoli>
 - Jiri Kuncar <https://github.com/jirikuncar>
 - Tibor Simko <https://github.com/tiborsimko>
+- Esteban J. G. Gabancho <https://github.com/egabancho>
+- Lars Holm Nielsen <https://github.com/lnielsen>
