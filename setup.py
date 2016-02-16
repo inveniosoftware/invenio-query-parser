@@ -87,6 +87,7 @@ setup(
     install_requires=[
         'pypeg2',
         'ordereddict',
+        'six>=1.10.0',
     ],
     extras_require={
         'docs': ['sphinx_rtd_theme'],

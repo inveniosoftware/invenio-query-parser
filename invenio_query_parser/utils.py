@@ -21,7 +21,14 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
+"""Utility functions for building list of allowed keywords."""
+
+from __future__ import absolute_import, print_function
+
+import re
+
 import pkg_resources
+from pypeg2 import attr
 
 
 def build_valid_keywords_grammar():
@@ -29,27 +36,16 @@ def build_valid_keywords_grammar():
     try:
         pkg_resources.get_distribution('flask')
         from flask import current_app
-        current_app.app_context()
-    except (pkg_resources.DistributionNotFound, RuntimeError):
-        HAS_FLASK = False
-    else:
-        HAS_FLASK = True
-
-    import re
-    from pypeg2 import attr
-
-    from invenio_query_parser.parser import (
-        KeywordQuery,
-        KeywordRule,
-        LeafRule,
-        NotKeywordValue,
-        SimpleQuery,
-        ValueQuery,
-    )
-
-    if HAS_FLASK:
         keywords_list = current_app.config.get('SEARCH_ALLOWED_KEYWORDS', [])
+    except (pkg_resources.DistributionNotFound, RuntimeError):
+        HAS_KEYWORDS = False
+    else:
+        HAS_KEYWORDS = True if keywords_list else False
 
+    from invenio_query_parser.parser import KeywordQuery, KeywordRule, \
+        NotKeywordValue, SimpleQuery, ValueQuery
+
+    if HAS_KEYWORDS:
         KeywordRule.grammar = attr('value', re.compile(
             r"(\d\d\d\w{{0,3}}|{0})\b".format("|".join(keywords_list), re.I)))
 

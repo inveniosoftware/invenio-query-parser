@@ -302,6 +302,15 @@ Query.grammar = attr('children', (
 
 
 class Main(UnaryRule):
+    initialized = False
+
+    def __init__(self):
+        """Initialize list of allowed keywords on first call."""
+        if not Main.initialized:
+            from invenio_query_parser.utils import build_valid_keywords_grammar
+            build_valid_keywords_grammar()
+            Main.initialized = True
+
     grammar = [
         (omit(_), attr('op', Query), omit(_)),
         attr('op', EmptyQueryRule),
