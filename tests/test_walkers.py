@@ -311,6 +311,7 @@ class TestMatchUnit(object):
         ('test', {'data': ['bar', 'test']}, True),
         ('test', {'data': ['bar', 'baz']}, False),
         ('test', {'data': [{'name': 'bar'}, {'name': 'test'}]}, True),
+        ('test', {'data': ({'name': 'bar'}, {'name': 'test'})}, True),
 
         # Keyword query
         ('title:"Test"', {'title': 'Test'}, True),

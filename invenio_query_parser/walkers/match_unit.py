@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@
 """Implement AST vistor."""
 
 import re
-from collections import MutableMapping, MutableSequence
+from collections import MutableMapping, Sequence
 
 import six
 
@@ -47,7 +47,8 @@ def dottable_getitem(data, dottable_key, default=None):
             key = keys[0]
             if isinstance(value, MutableMapping):
                 return value.get(key, default)
-            elif isinstance(value, MutableSequence):
+            elif isinstance(value, Sequence) and \
+                    not isinstance(value, six.string_types):
                 return [getitem(v, key) for v in value]
             return default
         return getitem(getitem(value, keys[0]), *keys[1:])
@@ -63,7 +64,7 @@ def match_unit(data, p, m='a'):
     if m != 'e' and isinstance(p, six.string_types):
         p = re.compile(p)
 
-    if isinstance(data, MutableSequence):
+    if isinstance(data, Sequence) and not isinstance(data, six.string_types):
         return any([match_unit(field, p, m=m)
                     for field in data])
     elif isinstance(data, MutableMapping):
