@@ -30,4 +30,4 @@ This file is imported by ``invenio_query_parser.__init__``, and parsed by
 # Do not change the format of this next line. Doing so risks breaking
 # setup.py and docs/conf.py
 
-__version__ = "0.4.2.dev20151113"
+__version__ = "0.5.0"

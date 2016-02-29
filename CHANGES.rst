@@ -1,6 +1,17 @@
 Changes
 =======
 
+Version 0.5.0 (released 2016-02-29):
+------------------------------------
+
+- Allows match unit to iterate over Sequences, i.e. tuple.
+- Removes distinctions between double and single quotes.
+- Adds support for allowed keywords.
+- Removes nestable keywords (to be re-added in the future).
+- Removes optional space after a keyword.
+- `AND`, `OR` and `NOT` are only considered as keywords when
+  written in caps.
+
 Version 0.4.1 (released 2015-11-13):
 ------------------------------------
 

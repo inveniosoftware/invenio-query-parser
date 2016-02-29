@@ -1,29 +1,43 @@
 =============================
- Invenio-Query-Parser v0.4.1
+ Invenio-Query-Parser v0.5.0
 =============================
 
-Invenio-Query-Parser v0.4.1 was released on November 13, 2015.
+Invenio-Query-Parser v0.5.0 was released on February 29, 2016.
 
 About
 -----
 
 Search query parser supporting Invenio and SPIRES search syntax.
 
+
+Incompatible changes
+--------------------
+
+- Removes nestable keywords (to be re-added in the future).
+- Removes optional space after a keyword.
+- `AND`, `OR` and `NOT` are only considered as keywords when
+  written in caps.
+
+New features
+------------
+
+- Adds support for allowed keywords.
+
 Improved features
 -----------------
 
-- Default key getter returns default value instead of raising key
-  error if the key is not found inside the dictionary.
+- Allows match unit to iterate over Sequences, i.e. tuple.
+- Removes distinctions between double and single quotes.
 
 Installation
 ------------
 
-   $ pip install invenio-query-parser==0.4.1
+   $ pip install invenio-query-parser==0.5.0
 
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.org/en/v0.4.1
+   http://invenio-query-parser.readthedocs.org/en/v0.5.0
 
 Happy hacking and thanks for flying Invenio-Query-Parser.
 
