@@ -38,9 +38,11 @@ with open(os.path.join('invenio_query_parser', 'version.py'), 'rt') as f:
     ).group('version')
 
 tests_require = [
-    'Flask>=0.10',
+    'check-manifest>=0.25',
     'coverage>=4.0.0',
-    'py>=1.4.30',
+    'isort>=4.2.2',
+    'pydocstyle>=1.0.0',
+    'pytest-cache>=1.0',
     'pytest-cov>=2.1.0',
     'pytest-pep8>=1.0.6',
     'pytest-runner>=2.7.0',
@@ -60,12 +62,17 @@ setup(
     packages=find_packages(exclude=['tests', 'docs']),
     include_package_data=True,
     install_requires=[
-        'pypeg2',
-        'ordereddict',
+        'pypeg2>=2.15.2',
+        'ordereddict>=1.1',
         'six>=1.10.0',
     ],
     extras_require={
-        'docs': ['sphinx_rtd_theme'],
+        'docs': [
+            'sphinx_rtd_theme>=0.1.9',
+        ],
+        'elasticsearch': [
+            'elasticsearch-dsl>=2.0.0',
+        ],
         'tests': tests_require,
     },
     tests_require=tests_require,

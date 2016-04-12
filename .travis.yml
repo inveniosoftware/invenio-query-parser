@@ -1,5 +1,5 @@
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,9 +19,20 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-language: python
+notifications:
+  email: false
 
 sudo: false
+
+language: python
+
+cache:
+  - pip
+
+env:
+  - REQUIREMENTS=lowest EXTRAS=docs,tests
+  - REQUIREMENTS=release EXTRAS=docs,tests
+  - REQUIREMENTS=devel EXTRAS=docs,tests
 
 python:
   - "2.7"
@@ -29,21 +40,22 @@ python:
   - "3.4"
   - "3.5"
 
+before_install:
+  - "travis_retry pip install --upgrade pip setuptools py"
+  - "travis_retry pip install twine wheel coveralls requirements-builder"
+  - "requirements-builder --level=min setup.py > .travis-lowest-requirements.txt"
+  - "requirements-builder --level=pypi setup.py > .travis-release-requirements.txt"
+  - "requirements-builder --level=dev --req requirements-devel.txt setup.py > .travis-devel-requirements.txt"
+
 install:
-  - pip install --upgrade pip
-  - pip install check-manifest coveralls
-  - pip install -e .[docs,tests]
+  - "travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt"
+  - "travis_retry pip install -e .[${EXTRAS}]"
 
 script:
-  - check-manifest
-  - sphinx-build -qnNW docs docs/_build/html
-  - python setup.py test
+  - "./run-tests.sh"
 
 after_success:
   - coveralls
-
-notifications:
-  email: false
 
 deploy:
   provider: pypi

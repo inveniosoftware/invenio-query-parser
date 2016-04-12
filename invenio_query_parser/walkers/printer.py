@@ -23,13 +23,8 @@
 
 """Implement query printer."""
 
-from ..ast import (
-    AndOp, KeywordOp, OrOp,
-    NotOp, Keyword, Value,
-    SingleQuotedValue,
-    DoubleQuotedValue,
-    RegexValue, RangeOp
-)
+from ..ast import AndOp, DoubleQuotedValue, Keyword, KeywordOp, NotOp, OrOp, \
+    RangeOp, RegexValue, SingleQuotedValue, Value
 from ..visitor import make_visitor
 
 

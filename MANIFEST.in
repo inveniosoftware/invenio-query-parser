@@ -21,6 +21,7 @@
 
 include *.py *.sh
 include *.rst
+include *.txt
 include .coveragerc .travis.yml pytest.ini
 include .editorconfig
 include docs/*.rst docs/*.py docs/Makefile

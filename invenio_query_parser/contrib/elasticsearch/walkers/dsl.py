@@ -23,11 +23,9 @@
 
 """Implement AST convertor to Elastic Search DSL."""
 
-from invenio_query_parser.ast import (AndOp, DoubleQuotedValue, EmptyQuery,
-                                      GreaterEqualOp, GreaterOp, Keyword,
-                                      KeywordOp, LowerEqualOp, LowerOp, NotOp,
-                                      OrOp, RangeOp, RegexValue,
-                                      SingleQuotedValue, Value, ValueQuery)
+from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
+    GreaterEqualOp, GreaterOp, Keyword, KeywordOp, LowerEqualOp, LowerOp, \
+    NotOp, OrOp, RangeOp, RegexValue, SingleQuotedValue, Value, ValueQuery
 from invenio_query_parser.visitor import make_visitor
 
 

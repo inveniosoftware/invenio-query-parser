@@ -23,8 +23,8 @@
 
 """SPIRES parser implementation."""
 
-from invenio_query_parser.parser import _
 from invenio_query_parser.parser import *
+from invenio_query_parser.parser import _
 
 from .config import SPIRES_KEYWORDS
 

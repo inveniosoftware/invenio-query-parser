@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+#!/bin/sh
 #
 # This file is part of Invenio-Query-Parser.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2016 CERN.
 #
 # Invenio-Query-Parser is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -21,25 +21,9 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""SPIRES to Invenio query converter."""
-
-import pypeg2
-
-from invenio_query_parser.walkers import repr_printer
-
-from .parser import Main
-from .walkers import pypeg_to_ast
-
-
-class SpiresToInvenioSyntaxConverter(object):
-    def __init__(self):
-        self.converter = pypeg_to_ast.PypegConverter()
-        self.printer = repr_printer.TreeRepr()
-
-    def parse_query(self, query):
-        """Parse query string using given grammar"""
-        tree = pypeg2.parse(query, Main, whitespace="")
-        return tree.accept(self.converter)
-
-    def convert_query(self, query):
-        return self.parse_query(query).accept(self.printer)
+# pydocstyle invenio_query_parser && \
+isort -rc -c -df **/*.py && \
+check-manifest --ignore ".travis-*" && \
+sphinx-build -qnNW docs docs/_build/html && \
+python setup.py test && \
+sphinx-build -qnNW -b doctest docs docs/_build/doctest

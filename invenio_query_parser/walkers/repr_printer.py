@@ -23,11 +23,9 @@
 
 """Implement representation printer."""
 
-from ..ast import (
-    AndOp, KeywordOp, OrOp, NotOp, Keyword, Value, SingleQuotedValue,
-    DoubleQuotedValue, ValueQuery, RegexValue, RangeOp, EmptyQuery,
-    GreaterOp, GreaterEqualOp, LowerOp, LowerEqualOp
-)
+from ..ast import AndOp, DoubleQuotedValue, EmptyQuery, GreaterEqualOp, \
+    GreaterOp, Keyword, KeywordOp, LowerEqualOp, LowerOp, NotOp, OrOp, \
+    RangeOp, RegexValue, SingleQuotedValue, Value, ValueQuery
 from ..visitor import make_visitor
 
 

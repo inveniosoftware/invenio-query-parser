@@ -24,7 +24,6 @@
 """Unit tests for the search engine query parsers."""
 
 import pypeg2
-
 import pytest
 from pytest import generate_tests
 
@@ -33,9 +32,9 @@ from invenio_query_parser.contrib.elasticsearch.walkers import dsl
 from invenio_query_parser.contrib.spires import converter
 from invenio_query_parser.contrib.spires.walkers import spires_to_invenio
 from invenio_query_parser.parser import Main
+from invenio_query_parser.utils import build_valid_keywords_grammar
 from invenio_query_parser.walkers import match_unit
 from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
-from invenio_query_parser.utils import build_valid_keywords_grammar
 
 
 def generate_walker_test(query, expected):

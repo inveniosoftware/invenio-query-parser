@@ -23,8 +23,8 @@
 
 """SPIRES extended repr printer."""
 
-from invenio_query_parser.walkers import repr_printer
 from invenio_query_parser.visitor import make_visitor
+from invenio_query_parser.walkers import repr_printer
 
 from .. import parser
 from ..ast import SpiresOp

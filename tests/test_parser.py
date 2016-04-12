@@ -25,28 +25,13 @@
 
 from __future__ import unicode_literals
 
-from invenio_query_parser.ast import (
-    AndOp,
-    DoubleQuotedValue,
-    EmptyQuery,
-    GreaterEqualOp,
-    GreaterOp,
-    Keyword,
-    KeywordOp,
-    LowerEqualOp,
-    LowerOp,
-    NotOp,
-    OrOp,
-    RangeOp,
-    RegexValue,
-    SingleQuotedValue,
-    Value,
-    ValueQuery)
+from pytest import generate_tests
 
+from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
+    GreaterEqualOp, GreaterOp, Keyword, KeywordOp, LowerEqualOp, LowerOp, \
+    NotOp, OrOp, RangeOp, RegexValue, SingleQuotedValue, Value, ValueQuery
 from invenio_query_parser.contrib.spires.ast import SpiresOp
 from invenio_query_parser.utils import build_valid_keywords_grammar
-
-from pytest import generate_tests
 
 
 def generate_parser_test(query, expected):

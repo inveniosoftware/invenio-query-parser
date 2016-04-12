@@ -21,10 +21,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-import pytest
 import shutil
 import tempfile
 
+import pytest
 from flask import Flask
 
 

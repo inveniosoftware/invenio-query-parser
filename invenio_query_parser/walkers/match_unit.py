@@ -28,10 +28,9 @@ from collections import MutableMapping, Sequence
 
 import six
 
-from invenio_query_parser.ast import (AndOp, DoubleQuotedValue, EmptyQuery,
-                                      Keyword, KeywordOp, NotOp, OrOp, RangeOp,
-                                      RegexValue, SingleQuotedValue, Value,
-                                      ValueQuery)
+from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
+    Keyword, KeywordOp, NotOp, OrOp, RangeOp, RegexValue, SingleQuotedValue, \
+    Value, ValueQuery
 from invenio_query_parser.visitor import make_visitor
 
 
