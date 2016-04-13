@@ -31,27 +31,18 @@ import pkg_resources
 from pypeg2 import attr
 
 
-def build_valid_keywords_grammar():
+def build_valid_keywords_grammar(keywords=None):
     """Update parser grammar to add a list of allowed keywords."""
-    try:
-        pkg_resources.get_distribution('flask')
-        from flask import current_app
-        keywords_list = current_app.config.get('SEARCH_ALLOWED_KEYWORDS', [])
-    except (pkg_resources.DistributionNotFound, RuntimeError):
-        HAS_KEYWORDS = False
-    else:
-        HAS_KEYWORDS = True if keywords_list else False
-
     from invenio_query_parser.parser import KeywordQuery, KeywordRule, \
         NotKeywordValue, SimpleQuery, ValueQuery
 
-    if HAS_KEYWORDS:
+    if keywords:
         KeywordRule.grammar = attr('value', re.compile(
-            r"(\d\d\d\w{{0,3}}|{0})\b".format("|".join(keywords_list), re.I)))
+            r"(\d\d\d\w{{0,3}}|{0})\b".format("|".join(keywords), re.I)))
 
         NotKeywordValue.grammar = attr('value', re.compile(
             r'\b(?!\d\d\d\w{{0,3}}|{0}:)\S+\b:'.format(
-                ":|".join(keywords_list))))
+                ":|".join(keywords))))
 
         SimpleQuery.grammar = attr(
             'op', [NotKeywordValue, KeywordQuery, ValueQuery])

@@ -469,7 +469,7 @@ class TestParser(object):
     )
 
 
-def test_parser_with_context(app):
+def test_parser_with_context():
     """Test parser with application context."""
     queries = (
         ("",
@@ -498,14 +498,13 @@ def test_parser_with_context(app):
          KeywordOp(Keyword('035__a'), Value('oai:arXiv.org:1503.06238'))),
     )
 
-    with app.app_context():
-        from invenio_query_parser.walkers import repr_printer
-        from invenio_query_parser.contrib.spires import converter
-        build_valid_keywords_grammar()
-        parser = converter.SpiresToInvenioSyntaxConverter()
+    from invenio_query_parser.walkers import repr_printer
+    from invenio_query_parser.contrib.spires import converter
+    build_valid_keywords_grammar(keywords=['title', '035__a'])
+    parser = converter.SpiresToInvenioSyntaxConverter()
 
-        for count, args in enumerate(queries):
-            tree = parser.parse_query(args[0])
-            printer = repr_printer.TreeRepr()
-            assert tree == args[1], "parsed tree: %s\nexpected tree: %s" % (
-                tree.accept(printer), args[1].accept(printer))
+    for count, args in enumerate(queries):
+        tree = parser.parse_query(args[0])
+        printer = repr_printer.TreeRepr()
+        assert tree == args[1], "parsed tree: %s\nexpected tree: %s" % (
+            tree.accept(printer), args[1].accept(printer))

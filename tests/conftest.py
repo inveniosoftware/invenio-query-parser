@@ -25,7 +25,6 @@ import shutil
 import tempfile
 
 import pytest
-from flask import Flask
 
 
 def generate_tests(generate_test):
@@ -43,21 +42,3 @@ def pytest_namespace():
     return dict((
         ("generate_tests", generate_tests),
     ))
-
-
-@pytest.fixture()
-def app(request):
-    """Flask application fixture."""
-    instance_path = tempfile.mkdtemp()
-    app = Flask(__name__, instance_path=instance_path)
-    app.config.update(
-        SEARCH_ALLOWED_KEYWORDS=set([
-            'title', 'author']),
-        TESTING=True,
-    )
-
-    def teardown():
-        shutil.rmtree(instance_path)
-    request.addfinalizer(teardown)
-
-    return app
