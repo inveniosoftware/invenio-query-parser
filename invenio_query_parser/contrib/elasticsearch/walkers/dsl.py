@@ -23,6 +23,11 @@
 
 """Implement AST convertor to Elastic Search DSL."""
 
+from functools import reduce
+from operator import and_, or_
+
+from elasticsearch_dsl import Q
+
 from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
     GreaterEqualOp, GreaterOp, Keyword, KeywordOp, LowerEqualOp, LowerOp, \
     NotOp, OrOp, RangeOp, RegexValue, SingleQuotedValue, Value, ValueQuery
@@ -51,21 +56,21 @@ class ElasticSearchDSL(object):
 
     @visitor(AndOp)
     def visit(self, node, left, right):
-        return {'bool': {'must': [left, right]}}
+        return left & right
 
     @visitor(OrOp)
     def visit(self, node, left, right):
-        return {'bool': {'should': [left, right]}}
+        return left | right
 
     @visitor(NotOp)
     def visit(self, node, op):
-        return {'bool': {'must_not': [op]}}
+        return ~op
 
     @visitor(KeywordOp)
     def visit(self, node, left, right):
         if callable(right):
             return right(left)
-        raise RuntimeError("Not supported second level operation.")
+        raise RuntimeError('Not supported second level operation.')
 
     @visitor(ValueQuery)
     def visit(self, node, op):
@@ -79,38 +84,23 @@ class ElasticSearchDSL(object):
     def visit(self, node):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='a')
-            return {
-                'multi_match': {
-                    'query': node.value,
-                    'fields': fields,
-                }
-            }
+            return Q('multi_match', query=node.value, fields=fields)
         return query
 
     @visitor(SingleQuotedValue)
     def visit(self, node):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='p')
-            return {
-                'multi_match': {
-                    'query': node.value,
-                    'type': 'phrase',
-                    'fields': fields,
-                }
-            }
+            return Q('multi_match', query=node.value, fields=fields,
+                     type='phrase')
         return query
 
     @visitor(DoubleQuotedValue)
     def visit(self, node):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='p')
-            return {
-                'multi_match': {
-                    'query': node.value,
-                    'type': 'phrase',
-                    'fields': fields,
-                }
-            }
+            return Q('multi_match', query=node.value, fields=fields,
+                     type='phrase')
         return query
 
     @visitor(RegexValue)
@@ -118,62 +108,50 @@ class ElasticSearchDSL(object):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='r')
             if keyword is None or fields is None:
-                raise RuntimeError("Not supported regex search for all fields")
-            if len(fields) > 1:
-                res = {"bool": {"should": [
-                    {'regexp': {k: node.value}} for k in fields
-                ]}}
-            else:
-                res = {'regexp': {fields[0]: node.value}}
-            return res
+                raise RuntimeError('Not supported regex search for all fields')
+            return reduce(or_, [
+                Q('regexp', **{k: node.value}) for k in fields
+            ])
         return query
 
     @visitor(EmptyQuery)
     def visit(self, node):
-        return {
-            "match_all": {}
-        }
+        return Q('match_all')
 
     def _range_operators(self, node, condition):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='r')
-            if len(fields) > 1:
-                res = {"bool": {"should": [
-                    {'range': {k: condition}} for k in fields
-                ]}}
-            else:
-                res = {'range': {fields[0]: condition}}
-            return res
+            return reduce(or_, [Q('range', **{k: condition}) for k in fields])
         return query
 
     @visitor(RangeOp)
     def visit(self, node, left, right):
         condition = {}
         if left:
-            condition['gte'] = left(None)["multi_match"]["query"]
+            condition['gte'] = left(None).to_dict()['multi_match']['query']
         if right:
-            condition['lte'] = right(None)["multi_match"]["query"]
+            condition['lte'] = right(None).to_dict()['multi_match']['query']
 
         return self._range_operators(node, condition)
 
     @visitor(GreaterOp)
     def visit(self, node, value_fn):
-        condition = {"gt": value_fn(None)["multi_match"]["query"]}
+        condition = {'gt': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(LowerOp)
     def visit(self, node, value_fn):
-        condition = {"lt": value_fn(None)["multi_match"]["query"]}
+        condition = {'lt': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(GreaterEqualOp)
     def visit(self, node, value_fn):
-        condition = {"gte": value_fn(None)["multi_match"]["query"]}
+        condition = {'gte': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(LowerEqualOp)
     def visit(self, node, value_fn):
-        condition = {"lte": value_fn(None)["multi_match"]["query"]}
+        condition = {'lte': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     # pylint: enable=W0612,E0102

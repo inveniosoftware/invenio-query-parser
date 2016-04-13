@@ -71,8 +71,8 @@ def generate_dsl_test(query, data, expected):
             with pytest.raises(expected):
                 new_tree = tree.accept(self.walker(**data or {}))
         else:
-            new_tree = tree.accept(self.walker(**data or {}))
-            assert new_tree == expected
+            new_tree = tree.accept(self.walker(**data or {})).to_dict()
+            assert new_tree == expected, query
     return func
 
 
@@ -116,27 +116,24 @@ class TestElasticsearchDSL(object):
     test_not_query = (
         'boo:bar AND NOT boo:bar',
         None,
-        {"bool": {"must":
-                  [{"multi_match":
-                    {"fields": ["boo"], "query": "bar"}},
-                   {"bool": {"must_not":
-                             [{"multi_match": {"fields": ["boo"],
-                              "query": "bar"}}]}}]}}
+        {'bool': {
+            'must': [{'multi_match': {'fields': ['boo'], 'query': 'bar'}}],
+            'must_not': [{'multi_match': {'fields': ['boo'], 'query': 'bar'}}]
+        }}
     )
-
-    left = {"multi_match": {"fields": ["_all"], "query": "ddd"}}
-    right_right = {"bool": {"must": [{"multi_match": {"fields": ["_all"],
-                            "query": "aaa"}},
-                                     {"multi_match": {"fields": ["_all"],
-                                      "query": "bbb"}}]}}
-    right_left = {"bool": {"must_not": [{"multi_match": {"fields": ["_all"],
-                  "query": "ccc"}}]}}
-    right = {"bool": {"must": [right_right, right_left]}}
 
     test_combined_bool_query = (
         '((aaa AND bbb) AND NOT ccc) OR ddd',
         None,
-        {"bool": {"should": [right, left]}}
+        {'bool': {'should': [
+            {'bool': {'must': [
+                {'multi_match': {'fields': ['_all'], 'query': 'aaa'}},
+                {'multi_match': {'fields': ['_all'], 'query': 'bbb'}}
+            ], 'must_not': [
+                {'multi_match': {'fields': ['_all'], 'query': 'ccc'}}
+            ]}},
+            {'multi_match': {'fields': ['_all'], 'query': 'ddd'}}
+        ]}}
     )
 
     # Operators

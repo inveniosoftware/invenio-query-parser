@@ -30,9 +30,9 @@ cache:
   - pip
 
 env:
-  - REQUIREMENTS=lowest EXTRAS=docs,tests
-  - REQUIREMENTS=release EXTRAS=docs,tests
-  - REQUIREMENTS=devel EXTRAS=docs,tests
+  - REQUIREMENTS=lowest EXTRAS=docs,tests,elasticsearch
+  - REQUIREMENTS=release EXTRAS=docs,tests,elasticsearch
+  - REQUIREMENTS=devel EXTRAS=docs,tests,elasticsearch
 
 python:
   - "2.7"
