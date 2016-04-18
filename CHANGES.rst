@@ -1,6 +1,15 @@
 Changes
 =======
 
+Version 0.6.0 (released 2016-04-18):
+------------------------------------
+
+- Removes check for Flask application context from
+  `build_valid_keywords_grammar` function in favor of new `keywords`
+  argument.
+- Elastic search DSL walker returns instance of `elasticsearch_dsl.Q`
+  instead of `dict`.
+
 Version 0.5.0 (released 2016-02-29):
 ------------------------------------
 

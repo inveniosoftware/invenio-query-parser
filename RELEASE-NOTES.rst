@@ -1,43 +1,32 @@
 =============================
- Invenio-Query-Parser v0.5.0
+ Invenio-Query-Parser v0.6.0
 =============================
 
-Invenio-Query-Parser v0.5.0 was released on February 29, 2016.
+Invenio-Query-Parser v0.6.0 was released on April 18, 2016.
 
 About
 -----
 
 Search query parser supporting Invenio and SPIRES search syntax.
 
-
 Incompatible changes
 --------------------
 
-- Removes nestable keywords (to be re-added in the future).
-- Removes optional space after a keyword.
-- `AND`, `OR` and `NOT` are only considered as keywords when
-  written in caps.
-
-New features
-------------
-
-- Adds support for allowed keywords.
-
-Improved features
------------------
-
-- Allows match unit to iterate over Sequences, i.e. tuple.
-- Removes distinctions between double and single quotes.
+- Removes check for Flask application context from
+  `build_valid_keywords_grammar` function in favor of new `keywords`
+  argument.
+- Elastic search DSL walker returns instance of `elasticsearch_dsl.Q`
+  instead of `dict`.
 
 Installation
 ------------
 
-   $ pip install invenio-query-parser==0.5.0
+   $ pip install invenio-query-parser==0.6.0
 
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.org/en/v0.5.0
+   http://invenio-query-parser.readthedocs.org/en/v0.6.0
 
 Happy hacking and thanks for flying Invenio-Query-Parser.
 
