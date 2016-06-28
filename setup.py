@@ -55,7 +55,7 @@ setup(
     url='https://github.com/inveniosoftware/invenio-query-parser',
     license='GPLv2',
     author='Invenio collaboration',
-    author_email='info@invenio-software.org',
+    author_email='info@inveniosoftware.org',
     description='Search query parser supporting Invenio and SPIRES '
         'search syntax.',
     long_description=__doc__,
