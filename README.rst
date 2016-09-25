@@ -10,8 +10,8 @@
    :target: https://pypi.python.org/pypi/invenio-query-parser/
 .. image:: https://pypip.in/d/invenio-query-parser/badge.png
    :target: https://pypi.python.org/pypi/invenio-query-parser/
-.. image:: https://readthedocs.org/projects/invenio-query-parser/badge/?version=latest
-   :target: https://invenio-query-parser.readthedocs.org/
+.. image:: https://readthedocs.io/projects/invenio-query-parser/badge/?version=latest
+   :target: https://invenio-query-parser.readthedocs.io/
 
 
 About
@@ -31,7 +31,7 @@ Invenio-Query-Parser is on PyPI so all you need is: ::
 Documentation
 =============
 
-Documentation is readable at http://invenio-query-parser.readthedocs.org or
+Documentation is readable at http://invenio-query-parser.readthedocs.io or
 it can be built using Sphinx: ::
 
     pip install invenio-query-parser[docs]

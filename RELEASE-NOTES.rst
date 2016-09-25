@@ -26,7 +26,7 @@ Installation
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.org/en/v0.6.0
+   http://invenio-query-parser.readthedocs.io/en/v0.6.0
 
 Happy hacking and thanks for flying Invenio-Query-Parser.
 
