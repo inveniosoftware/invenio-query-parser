@@ -25,6 +25,8 @@ include *.txt
 include .coveragerc .travis.yml pytest.ini
 include .editorconfig
 include docs/*.rst docs/*.py docs/Makefile docs/requirements.txt
+include .lgtm
 include LICENSE
+include MAINTAINERS
 include tests/*.ini tests/*.py
 include tox.ini
