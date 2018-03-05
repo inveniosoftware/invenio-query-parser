@@ -6,9 +6,9 @@
    :target: https://travis-ci.org/inveniosoftware/invenio-query-parser
 .. image:: https://coveralls.io/repos/inveniosoftware/invenio-query-parser/badge.png?branch=master
    :target: https://coveralls.io/r/inveniosoftware/invenio-query-parser
-.. image:: https://pypip.in/v/invenio-query-parser/badge.png
+.. image:: https://img.shields.io/pypi/v/invenio-query-parser.svg
    :target: https://pypi.python.org/pypi/invenio-query-parser/
-.. image:: https://pypip.in/d/invenio-query-parser/badge.png
+.. image:: https://img.shields.io/pypi/dm/invenio-query-parser.svg
    :target: https://pypi.python.org/pypi/invenio-query-parser/
 .. image:: https://readthedocs.io/projects/invenio-query-parser/badge/?version=latest
    :target: https://invenio-query-parser.readthedocs.io/
