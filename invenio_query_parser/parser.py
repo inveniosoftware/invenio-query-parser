@@ -18,7 +18,6 @@ from pypeg2 import Keyword, Literal, attr, maybe_some, omit, optional, some
 from . import ast
 from ._compat import string_types
 
-
 # pylint: disable=C0321,R0903
 
 

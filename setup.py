@@ -36,6 +36,26 @@ tests_require = [
     'pytest>=2.8.0',
 ]
 
+extras_require = {
+        'docs': [
+            'sphinx_rtd_theme>=0.1.9',
+        ],
+        'elasticsearch': [
+            'elasticsearch-dsl>=2.0.0',
+        ],
+        'tests': tests_require,
+}
+
+extras_require['all'] = []
+for reqs in extras_require.values():
+    extras_require['all'].extend(reqs)
+
+install_requires = [
+    'pypeg2>=2.15.2',
+    'ordereddict>=1.1',
+    'six>=1.10.0',
+]
+
 setup(
     name='invenio-query-parser',
     version=version,
@@ -48,20 +68,8 @@ setup(
     long_description=__doc__,
     packages=find_packages(exclude=['tests', 'docs']),
     include_package_data=True,
-    install_requires=[
-        'pypeg2>=2.15.2',
-        'ordereddict>=1.1',
-        'six>=1.10.0',
-    ],
-    extras_require={
-        'docs': [
-            'sphinx_rtd_theme>=0.1.9',
-        ],
-        'elasticsearch': [
-            'elasticsearch-dsl>=2.0.0',
-        ],
-        'tests': tests_require,
-    },
+    install_requires=install_requires,
+    extras_require=extras_require,
     tests_require=tests_require,
     classifiers=[
         'Programming Language :: Python :: 2',

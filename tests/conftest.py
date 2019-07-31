@@ -23,7 +23,5 @@ def generate_tests(generate_test):
     return fun
 
 
-def pytest_namespace():
-    return dict((
-        ("generate_tests", generate_tests),
-    ))
+def pytest_configure():
+    pytest.generate_tests = generate_tests
