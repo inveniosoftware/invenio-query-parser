@@ -30,3 +30,4 @@ include LICENSE
 include MAINTAINERS
 include tests/*.ini tests/*.py
 include tox.ini
+recursive-include .github/workflows *.yml

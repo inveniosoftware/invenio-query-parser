@@ -38,16 +38,24 @@ with open(os.path.join('invenio_query_parser', 'version.py'), 'rt') as f:
     ).group('version')
 
 tests_require = [
-    'check-manifest>=0.25',
-    'coverage>=4.0.0',
-    'isort>=4.2.2',
-    'pydocstyle>=1.0.0',
     'pytest-cache>=1.0',
-    'pytest-cov>=2.1.0',
-    'pytest-pep8>=1.0.6',
     'pytest-runner>=2.7.0',
-    'pytest>=2.8.0',
+    'pytest-invenio>=1.4.0'
 ]
+
+extras_require = {
+    'docs': [
+        'sphinx_rtd_theme>=0.1.9',
+    ],
+    'elasticsearch': [
+        'elasticsearch-dsl>=2.0.0',
+    ],
+    'tests': tests_require,
+}
+
+extras_require["all"] = []
+for reqs in extras_require.values():
+    extras_require["all"].extend(reqs)
 
 setup(
     name='invenio-query-parser',
@@ -66,19 +74,9 @@ setup(
         'ordereddict>=1.1',
         'six>=1.10.0',
     ],
-    extras_require={
-        'docs': [
-            'sphinx_rtd_theme>=0.1.9',
-        ],
-        'elasticsearch': [
-            'elasticsearch-dsl>=2.0.0',
-        ],
-        'tests': tests_require,
-    },
+    extras_require=extras_require,
     tests_require=tests_require,
     classifiers=[
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
