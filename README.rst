@@ -2,8 +2,8 @@
  Invenio-Query-Parser
 ======================
 
-.. image:: https://travis-ci.org/inveniosoftware/invenio-query-parser.png?branch=master
-   :target: https://travis-ci.org/inveniosoftware/invenio-query-parser
+.. image:: https://github.com/inveniosoftware/invenio-query-parser/actions?query=workflow%3ACI.png?branch=master
+   :target: https://github.com/inveniosoftware/invenio-query-parser/actions?query=workflow%3ACI
 .. image:: https://coveralls.io/repos/inveniosoftware/invenio-query-parser/badge.png?branch=master
    :target: https://coveralls.io/r/inveniosoftware/invenio-query-parser
 .. image:: https://pypip.in/v/invenio-query-parser/badge.png
