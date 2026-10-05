@@ -27,7 +27,6 @@ from __future__ import absolute_import, print_function
 
 import re
 
-import pkg_resources
 from pypeg2 import attr
 
 
