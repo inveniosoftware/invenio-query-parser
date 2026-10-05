@@ -24,9 +24,13 @@
 """Implement AST vistor."""
 
 import re
-from collections import MutableMapping, Sequence
-
 import six
+
+import sys
+if sys.version_info >= (3, 10):
+    from collections.abc import MutableMapping, Sequence
+else:
+    from collections import MutableMapping, Sequence
 
 from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
     Keyword, KeywordOp, NotOp, OrOp, RangeOp, RegexValue, SingleQuotedValue, \
