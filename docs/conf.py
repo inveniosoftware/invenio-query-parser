@@ -35,22 +35,8 @@
 
 """Sphinx configuration."""
 
-from __future__ import print_function
-
 import os
 import re
-import sys
-
-
-_html_theme = "sphinx_rtd_theme"
-_html_theme_path = []
-try:
-    import sphinx_rtd_theme
-    _html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-except ImportError:
-    print("`sphinx_rtd_theme` not found, pip install it", file=sys.stderr)
-    _html_theme = "default"
-
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -94,7 +80,7 @@ copyright = u'2014, Invenio collaboration'
 
 with open(os.path.join('..', 'invenio_query_parser', 'version.py'), 'rt') as f:
     version = re.search(
-        '__version__\s*=\s*"(?P<version>.*)"\n',
+        r'__version__\s*=\s*"(?P<version>.*)"\n',
         f.read()
     ).group('version')
 
@@ -144,16 +130,12 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = _html_theme
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #html_theme_options = {}
-
-# Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
-html_theme_path = _html_theme_path
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
