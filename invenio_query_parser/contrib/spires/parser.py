@@ -30,24 +30,31 @@ from .config import SPIRES_KEYWORDS
 
 
 class SpiresKeywordRule(LeafRule):
+    """Match a SPIRES keyword."""
+
     grammar = attr('value', re.compile(r"(%s)\b" % "|".join(
         SPIRES_KEYWORDS.keys()), re.I))
 
 
 class SpiresSimpleValue(LeafRule):
+    """Match an unquoted SPIRES value."""
 
     def __init__(self, values):
+        """Join matched units into a single value."""
         super(SpiresSimpleValue, self).__init__()
         self.value = "".join(v.value for v in values)
 
 
 class SpiresSimpleValueUnit(LeafRule):
+    """Match an unquoted SPIRES value unit."""
+
     grammar = [
         re.compile(r"[^\s\)\(]+"),
         (re.compile(r'\('), SpiresSimpleValue, re.compile(r'\)')),
     ]
 
     def __init__(self, args):
+        """Build value from a string or a parenthesized group."""
         super(SpiresSimpleValueUnit, self).__init__()
         if isinstance(args, string_types):
             self.value = args
@@ -59,10 +66,11 @@ SpiresSimpleValue.grammar = some(SpiresSimpleValueUnit)
 
 
 class SpiresSmartValue(UnaryRule):
+    """Match a value that is not a boolean operator."""
 
     @classmethod
     def parse(cls, parser, text, pos):  # pylint: disable=W0613
-        """Match simple values excluding some Keywords like 'and' and 'or'"""
+        """Match simple values excluding some Keywords like 'and' and 'or'."""
         if not text.strip():
             return text, SyntaxError("Invalid value")
 
@@ -83,6 +91,8 @@ class SpiresSmartValue(UnaryRule):
 
 
 class SpiresValue(ast.ListOp):
+    """Match a SPIRES value, possibly of several words."""
+
     grammar = [
         (SpiresSmartValue, maybe_some(Whitespace, SpiresSmartValue)),
         Value,
@@ -90,6 +100,8 @@ class SpiresValue(ast.ListOp):
 
 
 class GreaterQuery(UnaryRule):
+    """Match a greater than query (``>`` or ``after``)."""
+
     grammar = (
         omit([
             Literal('>'),
@@ -100,6 +112,8 @@ class GreaterQuery(UnaryRule):
 
 
 class GreaterEqualQuery(UnaryRule):
+    """Match a greater or equal query (``>=`` or ``N+``)."""
+
     grammar = [
         (omit(Literal('>='), _), attr('op', SpiresValue)),
         (attr('op', Number), omit(re.compile(r'\+(?=\s|\)|$)'))),
@@ -107,6 +121,8 @@ class GreaterEqualQuery(UnaryRule):
 
 
 class LowerQuery(UnaryRule):
+    """Match a lower than query (``<`` or ``before``)."""
+
     grammar = (
         omit([
             Literal('<'),
@@ -117,6 +133,8 @@ class LowerQuery(UnaryRule):
 
 
 class LowerEqualQuery(UnaryRule):
+    """Match a lower or equal query (``<=`` or ``N-``)."""
+
     grammar = [
         (omit(Literal('<='), _), attr('op', SpiresValue)),
         (attr('op', Number), omit(re.compile(r'\-(?=\s|\)|$)'))),
@@ -124,26 +142,34 @@ class LowerEqualQuery(UnaryRule):
 
 
 class Find(Keyword):
+    """Match the ``find`` command."""
+
     regex = re.compile(r"(find|fin|f)", re.I)
 
 
 class SpiresKeywordQuery(BinaryRule):
-    pass
+    """Match a SPIRES keyword query."""
 
 
 class SpiresValueQuery(UnaryRule):
+    """Match a SPIRES query consisting of a value only."""
+
     grammar = attr('op', SpiresValue)
 
 
 class SpiresSimpleQuery(UnaryRule):
+    """Match a SPIRES keyword query or value query."""
+
     grammar = attr('op', [SpiresKeywordQuery, SpiresValueQuery])
 
 
 class SpiresQuery(ListRule):
-    pass
+    """Match SPIRES queries joined by boolean operators."""
 
 
 class SpiresParenthesizedQuery(UnaryRule):
+    """Match a SPIRES query enclosed in parentheses."""
+
     grammar = (
         omit(Literal('('), _),
         attr('op', SpiresQuery),
@@ -152,6 +178,8 @@ class SpiresParenthesizedQuery(UnaryRule):
 
 
 class SpiresNotQuery(UnaryRule):
+    """Match a negated SPIRES query."""
+
     grammar = (
         [
             omit(re.compile(r"and\s+not", re.I)),
@@ -166,6 +194,8 @@ class SpiresNotQuery(UnaryRule):
 
 
 class SpiresAndQuery(UnaryRule):
+    """Match the right-hand side of a SPIRES ``and``."""
+
     grammar = (
         omit(re.compile(r"and", re.I)),
         [
@@ -177,6 +207,8 @@ class SpiresAndQuery(UnaryRule):
 
 
 class SpiresOrQuery(UnaryRule):
+    """Match the right-hand side of a SPIRES ``or``."""
+
     grammar = (
         omit(re.compile(r"or", re.I)),
         [
@@ -242,10 +274,14 @@ SpiresKeywordQuery.grammar = [
 
 
 class FindQuery(UnaryRule):
+    """Match a ``find`` query."""
+
     grammar = omit(Find, Whitespace), attr('op', SpiresQuery)
 
 
 class Main(UnaryRule):
+    """Match a complete SPIRES or Invenio query."""
+
     grammar = [
         (omit(_), attr('op', [FindQuery, Query]), omit(_)),
         attr('op', EmptyQueryRule),

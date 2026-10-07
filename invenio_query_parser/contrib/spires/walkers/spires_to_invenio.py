@@ -31,76 +31,95 @@ from ..ast import SpiresOp
 
 
 class SpiresToInvenio(object):
+    """Convert a SPIRES AST to an Invenio AST."""
+
     visitor = make_visitor()
 
     # pylint: disable=W0613,E0102
 
     @visitor(ast.AndOp)
     def visit(self, node, left, right):
+        """Convert ``AndOp`` node to Invenio AST."""
         return type(node)(left, right)
 
     @visitor(ast.OrOp)
     def visit(self, node, left, right):
+        """Convert ``OrOp`` node to Invenio AST."""
         return type(node)(left, right)
 
     @visitor(ast.KeywordOp)
     def visit(self, node, left, right):
+        """Convert ``KeywordOp`` node to Invenio AST."""
         return type(node)(left, right)
 
     @visitor(ast.RangeOp)
     def visit(self, node, left, right):
+        """Convert ``RangeOp`` node to Invenio AST."""
         return type(node)(left, right)
 
     @visitor(ast.NotOp)
     def visit(self, node, op):
+        """Convert ``NotOp`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.GreaterOp)
     def visit(self, node, op):
+        """Convert ``GreaterOp`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.LowerOp)
     def visit(self, node, op):
+        """Convert ``LowerOp`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.GreaterEqualOp)
     def visit(self, node, op):
+        """Convert ``GreaterEqualOp`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.LowerEqualOp)
     def visit(self, node, op):
+        """Convert ``LowerEqualOp`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.Keyword)
     def visit(self, node):
+        """Convert ``Keyword`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(ast.Value)
     def visit(self, node):
+        """Convert ``Value`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(ast.ValueQuery)
     def visit(self, node, op):
+        """Convert ``ValueQuery`` node to Invenio AST."""
         return type(node)(op)
 
     @visitor(ast.SingleQuotedValue)
     def visit(self, node):
+        """Convert ``SingleQuotedValue`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(ast.DoubleQuotedValue)
     def visit(self, node):
+        """Convert ``DoubleQuotedValue`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(ast.RegexValue)
     def visit(self, node):
+        """Convert ``RegexValue`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(ast.EmptyQuery)
     def visit(self, node):
+        """Convert ``EmptyQuery`` node to Invenio AST."""
         return type(node)(node.value)
 
     @visitor(SpiresOp)
     def visit(self, node, left, right):
+        """Convert ``SpiresOp`` node to Invenio AST."""
         left.value = SPIRES_KEYWORDS[left.value]
         return ast.KeywordOp(left, right)
 

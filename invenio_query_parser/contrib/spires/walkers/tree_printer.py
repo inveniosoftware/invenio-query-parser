@@ -31,8 +31,11 @@ from ..ast import SpiresOp
 
 
 class TreeRepr(repr_printer.TreeRepr):
+    """Print a representation of an AST with SPIRES operations."""
+
     visitor = make_visitor(repr_printer.TreeRepr.visitor)
 
     @visitor(SpiresOp)
     def visit(self, node, left, right):
+        """Return representation of ``SpiresOp`` node."""
         return "find %s %s" % (left, right)

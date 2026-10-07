@@ -28,108 +28,135 @@ from ..visitor import make_visitor
 
 
 class PypegConverter(object):
+    """Convert a pypeg2 parse tree to an AST."""
+
     visitor = make_visitor()
 
     # pylint: disable=W0613,E0102
 
     @visitor(parser.Whitespace)
     def visit(self, node):
+        """Convert ``Whitespace`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.Not)
     def visit(self, node, child):
+        """Convert ``Not`` parse node to AST."""
         return ast.NotOp(child)
 
     @visitor(parser.And)
     def visit(self, node, left, right):
+        """Convert ``And`` parse node to AST."""
         return ast.AndOp(left, right)
 
     @visitor(parser.Or)
     def visit(self, node, left, right):
+        """Convert ``Or`` parse node to AST."""
         return ast.Or(left, right)
 
     @visitor(parser.KeywordRule)
     def visit(self, node):
+        """Convert ``KeywordRule`` parse node to AST."""
         return ast.Keyword(node.value)
 
     @visitor(parser.SingleQuotedString)
     def visit(self, node):
+        """Convert ``SingleQuotedString`` parse node to AST."""
         return ast.SingleQuotedValue(node.value)
 
     @visitor(parser.DoubleQuotedString)
     def visit(self, node):
+        """Convert ``DoubleQuotedString`` parse node to AST."""
         return ast.DoubleQuotedValue(node.value)
 
     @visitor(parser.SlashQuotedString)
     def visit(self, node):
+        """Convert ``SlashQuotedString`` parse node to AST."""
         return ast.RegexValue(node.value)
 
     @visitor(parser.SimpleValue)
     def visit(self, node):
+        """Convert ``SimpleValue`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.SimpleRangeValue)
     def visit(self, node):
+        """Convert ``SimpleRangeValue`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.RangeValue)
     def visit(self, node, child):
+        """Convert ``RangeValue`` parse node to AST."""
         return child
 
     @visitor(parser.RangeOp)
     def visit(self, node, left, right):
+        """Convert ``RangeOp`` parse node to AST."""
         return ast.RangeOp(left, right)
 
     @visitor(parser.Number)
     def visit(self, node):
+        """Convert ``Number`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.Value)
     def visit(self, node, child):
+        """Convert ``Value`` parse node to AST."""
         return child
 
     @visitor(parser.ValueQuery)
     def visit(self, node, child):
+        """Convert ``ValueQuery`` parse node to AST."""
         return ast.ValueQuery(child)
 
     @visitor(parser.KeywordQuery)
     def visit(self, node, keyword, value):
+        """Convert ``KeywordQuery`` parse node to AST."""
         return ast.KeywordOp(keyword, value)
 
     @visitor(parser.NotKeywordValue)
     def visit(self, node):
+        """Convert ``NotKeywordValue`` parse node to AST."""
         return ast.ValueQuery(ast.Value(node.value))
 
     @visitor(parser.NestedKeywordsRule)
     def visit(self, node):
+        """Convert ``NestedKeywordsRule`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.SimpleQuery)
     def visit(self, node, child):
+        """Convert ``SimpleQuery`` parse node to AST."""
         return child
 
     @visitor(parser.ParenthesizedQuery)
     def visit(self, node, child):
+        """Convert ``ParenthesizedQuery`` parse node to AST."""
         return child
 
     @visitor(parser.NotQuery)
     def visit(self, node, child):
+        """Convert ``NotQuery`` parse node to AST."""
         return ast.NotOp(child)
 
     @visitor(parser.AndQuery)
     def visit(self, node, child):
+        """Convert ``AndQuery`` parse node to AST."""
         return ast.AndOp(None, child)
 
     @visitor(parser.ImplicitAndQuery)
     def visit(self, node, child):
+        """Convert ``ImplicitAndQuery`` parse node to AST."""
         return ast.AndOp(None, child)
 
     @visitor(parser.OrQuery)
     def visit(self, node, child):
+        """Convert ``OrQuery`` parse node to AST."""
         return ast.OrOp(None, child)
 
     @visitor(parser.Query)
     def visit(self, node, children):
+        """Convert ``Query`` parse node to AST."""
         # Build the boolean expression, left to right
         # x and y or z and ... --> ((x and y) or z) and ...
         tree = children[0]
@@ -140,10 +167,12 @@ class PypegConverter(object):
 
     @visitor(parser.EmptyQueryRule)
     def visit(self, node):
+        """Convert ``EmptyQueryRule`` parse node to AST."""
         return ast.EmptyQuery(node.value)
 
     @visitor(parser.Main)
     def visit(self, node, child):
+        """Convert ``Main`` parse node to AST."""
         return child
 
     # pylint: enable=W0612,E0102

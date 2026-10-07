@@ -498,8 +498,8 @@ def test_parser_with_context():
          KeywordOp(Keyword('035__a'), Value('oai:arXiv.org:1503.06238'))),
     )
 
-    from invenio_query_parser.walkers import repr_printer
     from invenio_query_parser.contrib.spires import converter
+    from invenio_query_parser.walkers import repr_printer
     build_valid_keywords_grammar(keywords=['title', '035__a'])
     parser = converter.SpiresToInvenioSyntaxConverter()
 

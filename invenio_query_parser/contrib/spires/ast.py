@@ -27,6 +27,9 @@ from invenio_query_parser.ast import BinaryOp
 
 
 class SpiresOp(BinaryOp):
+    """SPIRES keyword query."""
+
     @property
     def keyword(self):
+        """Return the left operand as the keyword."""
         return self.left

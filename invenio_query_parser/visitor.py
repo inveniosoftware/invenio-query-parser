@@ -28,21 +28,23 @@ class make_visitor(object):
     """Make a visitor decorator."""
 
     def __init__(self, methods=None):
+        """Initialize with optional inherited visitor methods."""
         self._methods = {}
         self.methods = methods or {}
 
     def __getitem__(self, key):
+        """Return visitor method registered for a node type."""
         if key in self._methods:
             return self._methods[key]
         return self.methods[key]
 
     def __setitem__(self, key, value):
+        """Register visitor method for a node type."""
         self._methods[key] = value
 
     # The actual @visitor decorator
     def __call__(self, arg_type):
-        """Decorator that creates a visitor method."""
-
+        """Create a decorator registering a visitor method."""
         # Delegating visitor implementation
 
         def _visitor_impl(new_self, arg, *args, **kwargs):

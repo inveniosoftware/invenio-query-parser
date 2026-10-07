@@ -32,75 +32,90 @@ from ..ast import SpiresOp
 
 
 class PypegConverter(pypeg_to_ast.PypegConverter):
+    """Convert a SPIRES pypeg2 parse tree to an AST."""
+
     visitor = make_visitor(pypeg_to_ast.PypegConverter.visitor)
 
     # pylint: disable=W0613,E0102
 
     @visitor(parser.SpiresKeywordRule)
     def visit(self, node):
+        """Convert ``SpiresKeywordRule`` parse node to AST."""
         return ast.Keyword(node.value)
 
     @visitor(parser.SpiresKeywordQuery)
     def visit(self, node, keyword, value):
+        """Convert ``SpiresKeywordQuery`` parse node to AST."""
         return SpiresOp(keyword, value)
 
     @visitor(parser.GreaterQuery)
     def visit(self, node, child):
+        """Convert ``GreaterQuery`` parse node to AST."""
         return ast.GreaterOp(child)
 
     @visitor(parser.GreaterEqualQuery)
     def visit(self, node, child):
+        """Convert ``GreaterEqualQuery`` parse node to AST."""
         return ast.GreaterEqualOp(child)
 
     @visitor(parser.LowerQuery)
     def visit(self, node, child):
+        """Convert ``LowerQuery`` parse node to AST."""
         return ast.LowerOp(child)
 
     @visitor(parser.LowerEqualQuery)
     def visit(self, node, child):
+        """Convert ``LowerEqualQuery`` parse node to AST."""
         return ast.LowerEqualOp(child)
 
     @visitor(parser.SpiresSimpleValue)
     def visit(self, node):
+        """Convert ``SpiresSimpleValue`` parse node to AST."""
         return ast.Value(node.value)
 
     @visitor(parser.SpiresValue)
     def visit(self, node, children):
+        """Convert ``SpiresValue`` parse node to AST."""
         return ast.Value("".join([c.value for c in children]))
 
     @visitor(parser.SpiresValueQuery)
     def visit(self, node, child):
+        """Convert ``SpiresValueQuery`` parse node to AST."""
         return ast.ValueQuery(child)
 
     @visitor(parser.SpiresSimpleQuery)
     def visit(self, node, child):
+        """Convert ``SpiresSimpleQuery`` parse node to AST."""
         return child
 
     @visitor(parser.SpiresParenthesizedQuery)
     def visit(self, node, child):
+        """Convert ``SpiresParenthesizedQuery`` parse node to AST."""
         return child
 
     @visitor(parser.SpiresNotQuery)
     def visit(self, node, child):
+        """Convert ``SpiresNotQuery`` parse node to AST."""
         return ast.AndOp(None, ast.NotOp(child))
 
     @visitor(parser.SpiresAndQuery)
     def visit(self, node, child):
+        """Convert ``SpiresAndQuery`` parse node to AST."""
         return ast.AndOp(None, child)
 
     @visitor(parser.SpiresOrQuery)
     def visit(self, node, child):
+        """Convert ``SpiresOrQuery`` parse node to AST."""
         return ast.OrOp(None, child)
 
     @visitor(parser.SpiresQuery)
     def visit(self, node, children):
+        """Convert ``SpiresQuery`` parse node to AST."""
         # Assign implicit keyword
         # find author x and y --> find author x and author y
 
         def assign_implicit_keyword(implicit_keyword, node):
-            """
-            Note: this function has side effects on node content
-            """
+            """Assign implicit keyword to node (modifies node in place)."""
             if type(node) in [ast.AndOp, ast.OrOp] and \
                type(node.right) == ast.ValueQuery:
                 node.right = SpiresOp(implicit_keyword, node.right.op)
@@ -129,10 +144,12 @@ class PypegConverter(pypeg_to_ast.PypegConverter):
 
     @visitor(parser.FindQuery)
     def visit(self, node, child):
+        """Convert ``FindQuery`` parse node to AST."""
         return child
 
     @visitor(parser.Main)
     def visit(self, node, child):
+        """Convert ``Main`` parse node to AST."""
         return child
 
     # pylint: enable=W0612,E0102

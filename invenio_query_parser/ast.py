@@ -25,17 +25,21 @@
 
 
 class BinaryOp(object):
+    """Base class for nodes with two operands."""
 
     def __init__(self, left, right):
+        """Store left and right operands."""
         self.left = left
         self.right = right
 
     def accept(self, visitor):
+        """Visit both operands, then this node."""
         return visitor.visit(self,
                              self.left.accept(visitor),
                              self.right.accept(visitor))
 
     def __eq__(self, other):
+        """Compare node type and operands."""
         return (
             type(self) == type(other)
         ) and (
@@ -45,28 +49,36 @@ class BinaryOp(object):
         )
 
     def __repr__(self):
+        """Return constructor-like representation."""
         return "%s(%s, %s)" % (self.__class__.__name__,
                                repr(self.left), repr(self.right))
 
 
 class UnaryOp(object):
+    """Base class for nodes with one operand."""
 
     def __init__(self, op):
+        """Store the operand."""
         self.op = op
 
     def accept(self, visitor):
+        """Visit the operand, then this node."""
         return visitor.visit(self, self.op.accept(visitor))
 
     def __eq__(self, other):
+        """Compare node type and operands."""
         return type(self) == type(other) and self.op == other.op
 
     def __repr__(self):
+        """Return constructor-like representation."""
         return "%s(%s)" % (self.__class__.__name__, repr(self.op))
 
 
 class ListOp(object):
+    """Base class for nodes with a list of children."""
 
     def __init__(self, children):
+        """Store children, wrapping a single child in a list."""
         try:
             iter(children)
         except TypeError:
@@ -75,35 +87,46 @@ class ListOp(object):
             self.children = children
 
     def accept(self, visitor):
+        """Visit all children, then this node."""
         return visitor.visit(self, [c.accept(visitor) for c in self.children])
 
     def __eq__(self, other):
+        """Compare with another node."""
         return type(self) == type(other) and self.op == other.op
 
     def __repr__(self):
+        """Return constructor-like representation."""
         return "%s(%s)" % (self.__class__.__name__, repr(self.children))
 
 
 class Leaf(object):
+    """Base class for nodes holding a single value."""
 
     def __init__(self, value):
+        """Store the value."""
         self.value = value
 
     def accept(self, visitor):
+        """Visit this node."""
         return visitor.visit(self)
 
     def __eq__(self, other):
+        """Compare node type and value."""
         return type(self) == type(other) and self.value == other.value
 
     def __repr__(self):
+        """Return constructor-like representation."""
         return '%s(%s)' % (self.__class__.__name__, repr(self.value))
 
 
 # Concrete classes
 
 class BinaryKeywordBase(BinaryOp):
+    """Binary operation exposing a SPIRES keyword."""
+
     @property
     def keyword(self):
+        """Return keyword of the SPIRES operand, if any."""
         # FIXME evaluate if it's possible to move it out to spires module
         from .contrib.spires.ast import SpiresOp
         if self.left:
@@ -115,70 +138,73 @@ class BinaryKeywordBase(BinaryOp):
 
 
 class AndOp(BinaryKeywordBase):
-    pass
+    """Logical AND of two queries."""
 
 
 class OrOp(BinaryKeywordBase):
-    pass
+    """Logical OR of two queries."""
 
 
 class NotOp(UnaryOp):
+    """Logical negation of a query."""
+
     @property
     def keyword(self):
+        """Return keyword of the negated query."""
         return getattr(self.op, 'keyword')
 
 
 class RangeOp(BinaryOp):
-    pass
+    """Inclusive range between two values."""
 
 
 class LowerOp(UnaryOp):
-    pass
+    """Lower than comparison."""
 
 
 class LowerEqualOp(UnaryOp):
-    pass
+    """Lower than or equal comparison."""
 
 
 class GreaterOp(UnaryOp):
-    pass
+    """Greater than comparison."""
 
 
 class GreaterEqualOp(UnaryOp):
-    pass
+    """Greater than or equal comparison."""
 
 
 class KeywordOp(BinaryOp):
-    pass
+    """Query restricted to a keyword."""
 
 
 class NestedKeywordsRule(BinaryOp):
-    pass
+    """Chain of nested keywords."""
 
 
 class ValueQuery(UnaryOp):
-    pass
+    """Query consisting of a value only."""
 
 
 class Keyword(Leaf):
-    pass
+    """Keyword name."""
 
 
 class Value(Leaf):
-    pass
+    """Unquoted value."""
 
 
 class SingleQuotedValue(Leaf):
-    pass
+    """Single-quoted value."""
 
 
 class DoubleQuotedValue(Leaf):
-    pass
+    """Double-quoted value."""
 
 
 class RegexValue(Leaf):
-    pass
+    """Regular expression value."""
 
 
 class EmptyQuery(Leaf):
-    pass
+    """Empty query."""

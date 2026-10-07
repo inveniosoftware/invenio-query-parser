@@ -32,14 +32,18 @@ from .walkers import pypeg_to_ast
 
 
 class SpiresToInvenioSyntaxConverter(object):
+    """Convert SPIRES queries to Invenio syntax."""
+
     def __init__(self):
+        """Set up the AST converter and printer."""
         self.converter = pypeg_to_ast.PypegConverter()
         self.printer = repr_printer.TreeRepr()
 
     def parse_query(self, query):
-        """Parse query string using given grammar"""
+        """Parse query string using given grammar."""
         tree = pypeg2.parse(query, Main, whitespace="")
         return tree.accept(self.converter)
 
     def convert_query(self, query):
+        """Convert SPIRES query string to Invenio syntax."""
         return self.parse_query(query).accept(self.printer)
