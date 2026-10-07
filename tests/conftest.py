@@ -21,6 +21,8 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
+"""Pytest configuration."""
+
 import shutil
 import tempfile
 
@@ -28,6 +30,7 @@ import pytest
 
 
 def generate_tests(generate_test):
+    """Return class decorator adding a test per query."""
     def fun(cls):
         for count, args in enumerate(cls.queries):
             func = generate_test(*args)
@@ -38,7 +41,6 @@ def generate_tests(generate_test):
     return fun
 
 
-def pytest_namespace():
-    return dict((
-        ("generate_tests", generate_tests),
-    ))
+def pytest_configure():
+    """Expose ``generate_tests`` as ``pytest.generate_tests``."""
+    pytest.generate_tests = generate_tests

@@ -24,9 +24,10 @@
 """Implement AST vistor."""
 
 import re
+import sys
+
 import six
 
-import sys
 if sys.version_info >= (3, 10):
     from collections.abc import MutableMapping, Sequence
 else:
@@ -98,50 +99,62 @@ class MatchUnit(object):
 
     @visitor(AndOp)
     def visit(self, node, left, right):
+        """Evaluate ``AndOp`` node against data."""
         return left & right
 
     @visitor(OrOp)
     def visit(self, node, left, right):
+        """Evaluate ``OrOp`` node against data."""
         return left | right
 
     @visitor(NotOp)
     def visit(self, node, op):
+        """Evaluate ``NotOp`` node against data."""
         return not op
 
     @visitor(KeywordOp)
     def visit(self, node, left, right):
+        """Evaluate ``KeywordOp`` node against data."""
         return match_unit(self.getitem(self.data, left), **right)
 
     @visitor(ValueQuery)
     def visit(self, node, op):
+        """Evaluate ``ValueQuery`` node against data."""
         return match_unit(self.data, **op)
 
     @visitor(Keyword)
     def visit(self, node):
+        """Evaluate ``Keyword`` node against data."""
         return node.value
 
     @visitor(Value)
     def visit(self, node):
+        """Evaluate ``Value`` node against data."""
         return dict(p=node.value)
 
     @visitor(SingleQuotedValue)
     def visit(self, node):
+        """Evaluate ``SingleQuotedValue`` node against data."""
         return dict(p=node.value, m='p')
 
     @visitor(DoubleQuotedValue)
     def visit(self, node):
+        """Evaluate ``DoubleQuotedValue`` node against data."""
         return dict(p=node.value, m='e')
 
     @visitor(RegexValue)
     def visit(self, node):
+        """Evaluate ``RegexValue`` node against data."""
         return dict(p=node.value, m='r')
 
     @visitor(RangeOp)
     def visit(self, node, left, right):
+        """Evaluate ``RangeOp`` node against data."""
         return dict(p=(left['p'], right['p']))
 
     @visitor(EmptyQuery)
     def visit(self, node):
+        """Evaluate ``EmptyQuery`` node against data."""
         return True
 
     # pylint: enable=W0612,E0102

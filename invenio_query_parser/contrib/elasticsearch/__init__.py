@@ -25,8 +25,8 @@
 
 import pypeg2
 
-from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
 from invenio_query_parser.parser import Main
+from invenio_query_parser.walkers.pypeg_to_ast import PypegConverter
 
 from .walkers.dsl import ElasticSearchDSL
 
