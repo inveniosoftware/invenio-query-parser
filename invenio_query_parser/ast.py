@@ -41,7 +41,7 @@ class BinaryOp(object):
     def __eq__(self, other):
         """Compare node type and operands."""
         return (
-            type(self) == type(other)
+            type(self) is type(other)
         ) and (
             self.left == other.left
         ) and (
@@ -67,7 +67,7 @@ class UnaryOp(object):
 
     def __eq__(self, other):
         """Compare node type and operands."""
-        return type(self) == type(other) and self.op == other.op
+        return type(self) is type(other) and self.op == other.op
 
     def __repr__(self):
         """Return constructor-like representation."""
@@ -92,7 +92,7 @@ class ListOp(object):
 
     def __eq__(self, other):
         """Compare with another node."""
-        return type(self) == type(other) and self.op == other.op
+        return type(self) is type(other) and self.op == other.op
 
     def __repr__(self):
         """Return constructor-like representation."""
@@ -112,7 +112,7 @@ class Leaf(object):
 
     def __eq__(self, other):
         """Compare node type and value."""
-        return type(self) == type(other) and self.value == other.value
+        return type(self) is type(other) and self.value == other.value
 
     def __repr__(self):
         """Return constructor-like representation."""

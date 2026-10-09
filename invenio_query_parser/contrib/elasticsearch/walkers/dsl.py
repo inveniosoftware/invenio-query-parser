@@ -21,12 +21,16 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Implement AST convertor to Elastic Search DSL."""
+"""Implement AST convertor to search engine DSL.
+
+The DSL module is provided by :mod:`invenio_search.api`, so it works with
+whichever search backend (Elasticsearch or OpenSearch) is installed.
+"""
 
 from functools import reduce
 from operator import and_, or_
 
-from elasticsearch_dsl import Q
+from invenio_search.api import dsl
 
 from invenio_query_parser.ast import AndOp, DoubleQuotedValue, EmptyQuery, \
     GreaterEqualOp, GreaterOp, Keyword, KeywordOp, LowerEqualOp, LowerOp, \
@@ -35,12 +39,12 @@ from invenio_query_parser.visitor import make_visitor
 
 
 class ElasticSearchDSL(object):
-    """Implement visitor to create Elastic Search DSL."""
+    """Implement visitor to create search engine DSL queries."""
 
     visitor = make_visitor()
 
     def __init__(self, keyword_to_fields=None):
-        """Provide a dictinary mapping from keywords to Elastic field(s)."""
+        """Provide a dictinary mapping from keywords to search field(s)."""
         self.keyword_to_fields = keyword_to_fields or {None: ['_all']}
 
     def get_fields_for_keyword(self, keyword, mode='a'):
@@ -56,88 +60,90 @@ class ElasticSearchDSL(object):
 
     @visitor(AndOp)
     def visit(self, node, left, right):
-        """Build Elasticsearch DSL for ``AndOp`` node."""
+        """Build search DSL for ``AndOp`` node."""
         return left & right
 
     @visitor(OrOp)
     def visit(self, node, left, right):
-        """Build Elasticsearch DSL for ``OrOp`` node."""
+        """Build search DSL for ``OrOp`` node."""
         return left | right
 
     @visitor(NotOp)
     def visit(self, node, op):
-        """Build Elasticsearch DSL for ``NotOp`` node."""
+        """Build search DSL for ``NotOp`` node."""
         return ~op
 
     @visitor(KeywordOp)
     def visit(self, node, left, right):
-        """Build Elasticsearch DSL for ``KeywordOp`` node."""
+        """Build search DSL for ``KeywordOp`` node."""
         if callable(right):
             return right(left)
         raise RuntimeError('Not supported second level operation.')
 
     @visitor(ValueQuery)
     def visit(self, node, op):
-        """Build Elasticsearch DSL for ``ValueQuery`` node."""
+        """Build search DSL for ``ValueQuery`` node."""
         return op(None)
 
     @visitor(Keyword)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``Keyword`` node."""
+        """Build search DSL for ``Keyword`` node."""
         return node.value
 
     @visitor(Value)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``Value`` node."""
+        """Build search DSL for ``Value`` node."""
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='a')
-            return Q('multi_match', query=node.value, fields=fields)
+            return dsl.Q('multi_match', query=node.value, fields=fields)
         return query
 
     @visitor(SingleQuotedValue)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``SingleQuotedValue`` node."""
+        """Build search DSL for ``SingleQuotedValue`` node."""
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='p')
-            return Q('multi_match', query=node.value, fields=fields,
-                     type='phrase')
+            return dsl.Q('multi_match', query=node.value, fields=fields,
+                         type='phrase')
         return query
 
     @visitor(DoubleQuotedValue)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``DoubleQuotedValue`` node."""
+        """Build search DSL for ``DoubleQuotedValue`` node."""
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='p')
-            return Q('multi_match', query=node.value, fields=fields,
-                     type='phrase')
+            return dsl.Q('multi_match', query=node.value, fields=fields,
+                         type='phrase')
         return query
 
     @visitor(RegexValue)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``RegexValue`` node."""
+        """Build search DSL for ``RegexValue`` node."""
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='r')
             if keyword is None or fields is None:
                 raise RuntimeError('Not supported regex search for all fields')
             return reduce(or_, [
-                Q('regexp', **{k: node.value}) for k in fields
+                dsl.Q('regexp', **{k: node.value}) for k in fields
             ])
         return query
 
     @visitor(EmptyQuery)
     def visit(self, node):
-        """Build Elasticsearch DSL for ``EmptyQuery`` node."""
-        return Q('match_all')
+        """Build search DSL for ``EmptyQuery`` node."""
+        return dsl.Q('match_all')
 
     def _range_operators(self, node, condition):
         def query(keyword):
             fields = self.get_fields_for_keyword(keyword, mode='r')
-            return reduce(or_, [Q('range', **{k: condition}) for k in fields])
+            return reduce(or_, [
+                dsl.Q('range', **{k: condition}) for k in fields
+            ])
         return query
 
     @visitor(RangeOp)
     def visit(self, node, left, right):
-        """Build Elasticsearch DSL for ``RangeOp`` node."""
+        """Build search DSL for ``RangeOp`` node."""
         condition = {}
         if left:
             condition['gte'] = left(None).to_dict()['multi_match']['query']
@@ -148,25 +154,25 @@ class ElasticSearchDSL(object):
 
     @visitor(GreaterOp)
     def visit(self, node, value_fn):
-        """Build Elasticsearch DSL for ``GreaterOp`` node."""
+        """Build search DSL for ``GreaterOp`` node."""
         condition = {'gt': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(LowerOp)
     def visit(self, node, value_fn):
-        """Build Elasticsearch DSL for ``LowerOp`` node."""
+        """Build search DSL for ``LowerOp`` node."""
         condition = {'lt': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(GreaterEqualOp)
     def visit(self, node, value_fn):
-        """Build Elasticsearch DSL for ``GreaterEqualOp`` node."""
+        """Build search DSL for ``GreaterEqualOp`` node."""
         condition = {'gte': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 
     @visitor(LowerEqualOp)
     def visit(self, node, value_fn):
-        """Build Elasticsearch DSL for ``LowerEqualOp`` node."""
+        """Build search DSL for ``LowerEqualOp`` node."""
         condition = {'lte': value_fn(None).to_dict()['multi_match']['query']}
         return self._range_operators(node, condition)
 

@@ -47,14 +47,25 @@ extras_require = {
     'docs': [
         'sphinx_rtd_theme>=0.1.9',
     ],
-    'elasticsearch': [
-        'elasticsearch-dsl>=2.0.0',
+    # Search engine backends (pick one) for the ``contrib.elasticsearch``
+    # walker, which uses the backend-agnostic ``invenio_search.api.dsl``.
+    'elasticsearch7': [
+        'invenio-search[elasticsearch7]>=2.1.0',
+    ],
+    'opensearch1': [
+        'invenio-search[opensearch1]>=2.1.0',
+    ],
+    'opensearch2': [
+        'invenio-search[opensearch2]>=2.1.0',
     ],
     'tests': tests_require,
 }
 
 extras_require["all"] = []
-for reqs in extras_require.values():
+for name, reqs in extras_require.items():
+    # Search backends are mutually exclusive, so they are not part of "all".
+    if name in ('elasticsearch7', 'opensearch1', 'opensearch2'):
+        continue
     extras_require["all"].extend(reqs)
 
 setup(
