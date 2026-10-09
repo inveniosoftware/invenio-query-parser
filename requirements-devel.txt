@@ -21,4 +21,4 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
--e git+https://github.com/elastic/elasticsearch-dsl-py.git#egg=elasticsearch-dsl
+-e git+https://github.com/inveniosoftware/invenio-search.git#egg=invenio-search

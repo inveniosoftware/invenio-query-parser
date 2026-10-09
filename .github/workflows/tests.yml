@@ -27,7 +27,7 @@ jobs:
   Python:
     uses: inveniosoftware/workflows/.github/workflows/tests-python.yml@master
     with:
-      extras: "docs,tests,elasticsearch"
+      extras: "docs,tests"
       python-version: '["3.9", "3.12", "3.14"]'
       db-service: '[""]'
-      search-service: '[""]'
+      search-service: '["opensearch2"]'

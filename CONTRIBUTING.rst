@@ -16,7 +16,8 @@ operating correctly:
 
 .. code-block:: console
 
-    $ python setup.py test
+    $ pip install -e ".[tests,opensearch2]"
+    $ ./run-tests.sh
 
     ...
 

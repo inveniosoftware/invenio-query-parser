@@ -41,6 +41,9 @@ it can be built using Sphinx: ::
 Testing
 =======
 
-Running the test suite is as simple as: ::
+Install the test dependencies together with one search backend
+(``opensearch2``, ``opensearch1`` or ``elasticsearch7``) and run the
+test suite: ::
 
-    python setup.py test
+    pip install -e ".[tests,opensearch2]"
+    ./run-tests.sh

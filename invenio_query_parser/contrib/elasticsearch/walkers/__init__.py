@@ -1,1 +1,1 @@
-"""Elasticsearch AST walkers."""
+"""Search engine (Elasticsearch/OpenSearch) AST walkers."""

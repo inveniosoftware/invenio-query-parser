@@ -21,7 +21,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 
-"""Implement query convertor to Elastic Search DSL."""
+"""Implement query convertor to search engine DSL (via invenio-search)."""
 
 import pypeg2
 
@@ -32,7 +32,7 @@ from .walkers.dsl import ElasticSearchDSL
 
 
 def invenio_query_factory(parser=None, walkers=None):
-    """Create a parser returning Elastic Search DSL query instance."""
+    """Create a parser returning a search engine DSL query instance."""
     parser = parser or Main
     walkers = walkers or [PypegConverter()]
     walkers.append(ElasticSearchDSL())

@@ -117,13 +117,13 @@ class PypegConverter(pypeg_to_ast.PypegConverter):
         def assign_implicit_keyword(implicit_keyword, node):
             """Assign implicit keyword to node (modifies node in place)."""
             if type(node) in [ast.AndOp, ast.OrOp] and \
-               type(node.right) == ast.ValueQuery:
+               type(node.right) is ast.ValueQuery:
                 node.right = SpiresOp(implicit_keyword, node.right.op)
             if type(node) in [ast.AndOp, ast.OrOp] and \
-               type(node.right) == ast.NotOp:
+               type(node.right) is ast.NotOp:
                 assign_implicit_keyword(implicit_keyword, node.right)
             if type(node) in [ast.NotOp] and \
-               type(node.op) == ast.ValueQuery:
+               type(node.op) is ast.ValueQuery:
                 node.op = SpiresOp(implicit_keyword, node.op.op)
 
         implicit_keyword = None
