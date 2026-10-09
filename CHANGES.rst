@@ -1,11 +1,6 @@
 Changes
 =======
 
-Version 0.7.0 (released 2026-10-05):
-------------------------------------
-
-- Fixes imports for Python upgrade.
-
 Version 0.6.0 (released 2016-04-18):
 ------------------------------------
 
