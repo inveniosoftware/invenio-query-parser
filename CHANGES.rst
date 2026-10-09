@@ -1,6 +1,18 @@
 Changes
 =======
 
+Version 0.7.0 (released 2026-10-09):
+------------------------------------
+
+- Fixes imports for Python upgrade.
+- Updates CI and tests to use new image
+- Fixed errors caused by new tests
+- Search DSL walker now uses ``invenio_search.api.dsl`` instead of
+  importing ``elasticsearch_dsl`` directly, so it works with any search
+  backend supported by Invenio-Search (Elasticsearch or OpenSearch).
+- Replaces the ``elasticsearch`` extra with ``elasticsearch7``,
+  ``opensearch1`` and ``opensearch2`` extras.
+
 Version 0.6.0 (released 2016-04-18):
 ------------------------------------
 
