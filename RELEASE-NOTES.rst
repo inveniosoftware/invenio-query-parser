@@ -1,28 +1,32 @@
 =============================
- Invenio-Query-Parser v0.7.0
+ Invenio-Query-Parser v0.6.0
 =============================
 
-Invenio-Query-Parser v0.7.0 was released on October 5th, 2026.
+Invenio-Query-Parser v0.6.0 was released on April 18, 2016.
 
 About
 -----
 
 Search query parser supporting Invenio and SPIRES search syntax.
 
-Changes
+Incompatible changes
 --------------------
 
-- Added support for python versions newer than 3.9.
+- Removes check for Flask application context from
+  `build_valid_keywords_grammar` function in favor of new `keywords`
+  argument.
+- Elastic search DSL walker returns instance of `elasticsearch_dsl.Q`
+  instead of `dict`.
 
 Installation
 ------------
 
-   $ pip install invenio-query-parser==0.7.0
+   $ pip install invenio-query-parser==0.6.0
 
 Documentation
 -------------
 
-   http://invenio-query-parser.readthedocs.io/en/v0.7.0
+   http://invenio-query-parser.readthedocs.io/en/v0.6.0
 
 Happy hacking and thanks for flying Invenio-Query-Parser.
 
